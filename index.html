@@ -195,11 +195,16 @@ async function register(){
 }
 
 function askPin(user, onSuccess){
+  const hasPin = user.pin && user.pin.length === 4;
+  const effectivePin = hasPin ? user.pin : '0000';
+  const subtitle = hasPin
+    ? 'Entrez votre code PIN à 4 chiffres pour vous connecter.'
+    : 'Aucun PIN défini sur ce compte. Le code par défaut est <strong>0000</strong>. Pensez à le changer dans vos paramètres.';
   showPinModal({
     title: `Bonjour ${user.name} 👋`,
-    subtitle: 'Entrez votre code PIN à 4 chiffres pour vous connecter.',
+    subtitle,
     onConfirm: (pin)=>{
-      if(pin===user.pin){ closeOverlay(); onSuccess(); }
+      if(pin === effectivePin){ closeOverlay(); onSuccess(); }
       else{ document.getElementById('pinErr').textContent='Code PIN incorrect'; }
     }
   });
@@ -290,12 +295,14 @@ async function showMine(){
     </div>
     <div class="section-label">Ma liste — ${list.length} livre${list.length!==1?'s':''}</div>
     ${items||`<div class="empty"><span class="big">📚</span>Votre liste est vide.<br>Ajoutez le premier livre dont vous rêvez !</div>`}
-    <div class="section-label" style="margin-top:32px">Danger</div>
+    <div class="section-label" style="margin-top:32px">Mon compte</div>
     <div class="panel">
+      <button class="btn secondary" id="btnChangePin" style="margin-bottom:10px">🔑 Changer mon code PIN</button>
       <button class="btn danger" id="btnDelete">🗑 Supprimer mon compte</button>
     </div>`;
 
   document.getElementById('btnAdd').addEventListener('click', addBook);
+  document.getElementById('btnChangePin').addEventListener('click', changePin);
   document.getElementById('btnDelete').addEventListener('click', confirmDeleteAccount);
   document.querySelectorAll('#heartPick span').forEach(s=>{
     s.addEventListener('click',()=>{ pickedHearts=+s.dataset.n; document.querySelectorAll('#heartPick span').forEach(x=>x.classList.toggle('on',+x.dataset.n<=pickedHearts)); });
@@ -327,6 +334,80 @@ async function removeBook(id){
   await saveWishlist(me.slug,list.filter(b=>b.id!==id));
   toast('Livre retiré');
   showMine();
+}
+
+function changePin(){
+  // Étape 1 : vérifier l'ancien PIN
+  const root = document.getElementById('overlayRoot');
+  root.innerHTML = `
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <h3>Changer mon code PIN</h3>
+        <p>Entrez d'abord votre code PIN actuel (0000 si jamais défini).</p>
+        <div class="pin-wrap">
+          <input class="pin-dot" id="p0" type="password" inputmode="numeric" maxlength="1">
+          <input class="pin-dot" id="p1" type="password" inputmode="numeric" maxlength="1">
+          <input class="pin-dot" id="p2" type="password" inputmode="numeric" maxlength="1">
+          <input class="pin-dot" id="p3" type="password" inputmode="numeric" maxlength="1">
+        </div>
+        <div class="err" id="pinErr"></div>
+        <div class="modal-btns">
+          <button class="btn" id="pinConfirm">Suivant</button>
+          <button class="btn secondary" id="pinCancel">Annuler</button>
+        </div>
+      </div>
+    </div>`;
+  const dots=[0,1,2,3].map(i=>document.getElementById('p'+i));
+  dots[0].focus();
+  dots.forEach((d,i)=>{
+    d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,''); if(d.value&&i<3) dots[i+1].focus(); });
+    d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0){ dots[i-1].focus();dots[i-1].value=''; } });
+  });
+  document.getElementById('pinCancel').addEventListener('click', closeOverlay);
+  document.getElementById('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeOverlay(); });
+  document.getElementById('pinConfirm').addEventListener('click', async()=>{
+    const oldPin = dots.map(d=>d.value).join('');
+    if(oldPin.length<4){ document.getElementById('pinErr').textContent='Entrez les 4 chiffres'; return; }
+    const snap = await db.collection('users').doc(me.slug).get();
+    const stored = snap.data().pin || '0000';
+    if(oldPin !== stored){ document.getElementById('pinErr').textContent='Code PIN incorrect'; return; }
+    // Étape 2 : saisir le nouveau PIN
+    root.innerHTML = `
+      <div class="overlay" id="overlay">
+        <div class="modal">
+          <h3>Nouveau code PIN</h3>
+          <p>Choisissez votre nouveau code PIN à 4 chiffres.</p>
+          <div class="pin-wrap">
+            <input class="pin-dot" id="n0" type="password" inputmode="numeric" maxlength="1">
+            <input class="pin-dot" id="n1" type="password" inputmode="numeric" maxlength="1">
+            <input class="pin-dot" id="n2" type="password" inputmode="numeric" maxlength="1">
+            <input class="pin-dot" id="n3" type="password" inputmode="numeric" maxlength="1">
+          </div>
+          <div class="err" id="pinErr"></div>
+          <div class="modal-btns">
+            <button class="btn" id="pinConfirm">Enregistrer</button>
+            <button class="btn secondary" id="pinCancel">Annuler</button>
+          </div>
+        </div>
+      </div>`;
+    const nd=[0,1,2,3].map(i=>document.getElementById('n'+i));
+    nd[0].focus();
+    nd.forEach((d,i)=>{
+      d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,''); if(d.value&&i<3) nd[i+1].focus(); });
+      d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0){ nd[i-1].focus();nd[i-1].value=''; } });
+    });
+    document.getElementById('pinCancel').addEventListener('click', closeOverlay);
+    document.getElementById('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeOverlay(); });
+    document.getElementById('pinConfirm').addEventListener('click', async()=>{
+      const newPin = nd.map(d=>d.value).join('');
+      if(newPin.length<4){ document.getElementById('pinErr').textContent='Entrez les 4 chiffres'; return; }
+      try{
+        await db.collection('users').doc(me.slug).update({ pin: newPin });
+        closeOverlay();
+        toast('Code PIN mis à jour ✓');
+      }catch(e){ console.error(e); toast('Erreur : '+e.message); }
+    });
+  });
 }
 
 function confirmDeleteAccount(){
