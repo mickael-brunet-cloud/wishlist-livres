@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Entre les pages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2D2438;--ink-soft:#57496B;--paper:#F7F3EC;--card:#FFFFFF;
+    --raspberry:#C93A5E;--raspberry-soft:#F3D9E0;--sage:#7A8B6F;
+    --gold:#C9973A;--line:#E4DDD2;--radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{font-family:'Karla',sans-serif;background:var(--ink);color:var(--ink);}
+  #app{max-width:430px;margin:0 auto;min-height:100dvh;background:var(--paper);display:flex;flex-direction:column;}
+  header{background:var(--ink);color:var(--paper);padding:18px 20px 16px;}
+  header .brand{font-family:'Fraunces',serif;font-weight:900;font-size:22px;letter-spacing:.3px;}
+  header .brand span{color:var(--raspberry)}
+  header .whoami{margin-top:4px;font-size:13px;color:#BFB4D0;display:flex;align-items:center;gap:8px;}
+  header .whoami button{background:none;border:1px solid #57496B;color:#BFB4D0;border-radius:20px;padding:2px 10px;font-size:12px;font-family:inherit;cursor:pointer;}
+  nav{display:flex;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;}
+  nav button{flex:1;padding:13px 0;border:none;background:none;font-family:'Karla',sans-serif;font-size:14px;font-weight:700;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;}
+  nav button.active{color:var(--raspberry);border-bottom-color:var(--raspberry)}
+  main{flex:1;padding:18px 16px 40px;overflow-y:auto}
+  .login-hero{text-align:center;padding:34px 10px 26px;}
+  .login-hero h1{font-family:'Fraunces',serif;font-weight:900;font-size:30px;line-height:1.15;}
+  .login-hero h1 em{font-style:italic;color:var(--raspberry)}
+  .login-hero p{margin-top:10px;font-size:14px;color:var(--ink-soft);line-height:1.5}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
+  .panel h2{font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:12px;}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+  input[type=text]{width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:10px;font-family:'Karla',sans-serif;font-size:16px;background:var(--paper);color:var(--ink);}
+  input[type=text]:focus{outline:none;border-color:var(--raspberry)}
+  .btn{display:block;width:100%;padding:13px;border:none;border-radius:10px;background:var(--raspberry);color:#fff;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
+  .btn:active{transform:scale(.985)}
+  .btn.secondary{background:var(--ink)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .user-pick{display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 14px;margin-bottom:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;}
+  .user-pick:active{border-color:var(--raspberry)}
+  .user-pick .count{font-size:12px;font-weight:500;color:var(--ink-soft)}
+  .book{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 14px 14px 22px;margin-bottom:10px;overflow:hidden;}
+  .book::before{content:'';position:absolute;left:0;top:0;bottom:0;width:9px;background:var(--spine,#7A8B6F);}
+  .book .title{font-family:'Fraunces',serif;font-weight:700;font-size:16px;line-height:1.25}
+  .book .author{font-size:13px;color:var(--ink-soft);margin-top:2px}
+  .book .hearts{margin-top:7px;font-size:15px;letter-spacing:2px;color:var(--raspberry)}
+  .book .hearts .off{color:var(--line)}
+  .book .row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .book .del{border:none;background:none;color:var(--ink-soft);font-size:18px;cursor:pointer;padding:2px 4px;}
+  .book.bought{opacity:.65}
+  .book.bought .title{text-decoration:line-through}
+  .buy-toggle{margin-top:10px;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;user-select:none;}
+  .buy-toggle input{width:20px;height:20px;accent-color:var(--sage);cursor:pointer}
+  .tag-offert{display:inline-block;margin-top:8px;background:var(--sage);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.4px;}
+  .heart-pick{display:flex;gap:6px;font-size:28px;cursor:pointer}
+  .heart-pick span{color:var(--line);transition:transform .1s}
+  .heart-pick span.on{color:var(--raspberry)}
+  .heart-pick span:active{transform:scale(1.2)}
+  .section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ink-soft);margin:20px 0 10px;}
+  .empty{text-align:center;padding:34px 18px;color:var(--ink-soft);font-size:14px;line-height:1.6;}
+  .empty .big{font-size:34px;display:block;margin-bottom:8px}
+  .back{background:none;border:none;color:var(--raspberry);font-family:'Karla',sans-serif;font-weight:700;font-size:14px;cursor:pointer;padding:0;margin-bottom:14px;}
+  .friend-head{font-family:'Fraunces',serif;font-size:22px;font-weight:900;margin-bottom:2px;}
+  .friend-sub{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:24px;font-size:13px;font-weight:700;z-index:50;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;}
+  .toast.show{opacity:1}
+  .loading{text-align:center;padding:40px;color:var(--ink-soft);font-size:14px}
+  .spinner{display:inline-block;width:24px;height:24px;border:3px solid var(--line);border-top-color:var(--raspberry);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="header" style="display:none">
+    <div class="brand">Entre les <span>pages</span></div>
+    <div class="whoami"><span id="whoamiName"></span><button onclick="logout()">Changer</button></div>
+  </header>
+  <nav id="nav" style="display:none">
+    <button id="tabMine" onclick="showMine()">Ma liste</button>
+    <button id="tabOthers" onclick="showOthers()">Les listes</button>
+  </nav>
+  <main id="main"><div class="loading"><div class="spinner"></div><br>Connexion…</div></main>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDhQmOxYAmXc3NOIskMfSdGjsrfcLrGjmM",
+  authDomain: "wishlivres.firebaseapp.com",
+  projectId: "wishlivres",
+  storageBucket: "wishlivres.firebasestorage.app",
+  messagingSenderId: "800893384311",
+  appId: "1:800893384311:web:601479432ad7ac8e81b872"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
+/* ===== utils ===== */
+const SPINES = ['#7A8B6F','#C9973A','#5B6FA8','#C93A5E','#8A5BA8','#3E7C7B'];
+let me = null;
+let currentFriend = null;
+let pickedHearts = 3;
+
+function slugify(name){
+  return name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || 'lecteur';
+}
+function esc(s){ const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400);
+}
+function hearts(n){
+  let h='';
+  for(let i=1;i<=5;i++) h += i<=n ? '♥' : '<span class="off">♥</span>';
+  return '<div class="hearts">'+h+'</div>';
+}
+function spine(i){ return SPINES[i % SPINES.length]; }
+function setLoading(){ document.getElementById('main').innerHTML='<div class="loading"><div class="spinner"></div><br>Chargement…</div>'; }
+
+/* ===== Firestore helpers ===== */
+async function getUsers(){
+  const snap = await getDocs(collection(db,'users'));
+  return snap.docs.map(d=>d.data());
+}
+async function getWishlist(slug){
+  const snap = await getDoc(doc(db,'wishlists',slug));
+  return snap.exists() ? (snap.data().books || []) : [];
+}
+async function saveWishlist(slug, books){
+  await setDoc(doc(db,'wishlists',slug), {books}, {merge:true});
+}
+
+/* ===== auth ===== */
+async function register(name){
+  name = name.trim();
+  if(!name){ toast('Entrez un prénom'); return; }
+  const btn = document.getElementById('btnRegister');
+  btn.disabled = true; btn.textContent = 'Création…';
+  try {
+    const slug = slugify(name);
+    const existing = await getDoc(doc(db,'users',slug));
+    if(existing.exists()){ toast('Ce prénom existe déjà, sélectionnez-le'); btn.disabled=false; btn.textContent="Créer ma liste"; return; }
+    await setDoc(doc(db,'users',slug),{name,slug});
+    me = {name,slug};
+    enterApp();
+  } catch(e){ toast('Erreur : '+e.message); btn.disabled=false; btn.textContent="Créer ma liste"; }
+}
+window.loginAs = function(name,slug){ me={name,slug}; enterApp(); }
+window.logout = function(){ me=null; currentFriend=null; renderLogin(); }
+
+/* ===== screens ===== */
+async function renderLogin(){
+  document.getElementById('header').style.display='none';
+  document.getElementById('nav').style.display='none';
+  setLoading();
+  try {
+    const users = await getUsers();
+    const counts = {};
+    for(const u of users){
+      const list = await getWishlist(u.slug);
+      counts[u.slug] = list.filter(b=>!b.boughtBy).length;
+    }
+    let picks = users.map(u=>
+      `<button class="user-pick" onclick="loginAs('${esc(u.name).replace(/'/g,"\\'")}','${u.slug}')">
+        <span>${esc(u.name)}</span>
+        <span class="count">${counts[u.slug]} livre${counts[u.slug]>1?'s':''} à offrir</span>
+      </button>`).join('');
+    document.getElementById('main').innerHTML = `
+      <div class="login-hero">
+        <h1>Entre les <em>pages</em></h1>
+        <p>Partagez votre liste de livres rêvés,<br>et offrez ceux des autres sans jamais vous tromper.</p>
+      </div>
+      ${users.length?`<div class="panel"><h2>C'est vous ?</h2>${picks}</div>`:''}
+      <div class="panel">
+        <h2>${users.length?'Nouveau ? Inscrivez-vous':'Inscrivez-vous'}</h2>
+        <div class="field">
+          <label for="newName">Votre prénom</label>
+          <input type="text" id="newName" placeholder="ex. Camille" maxlength="30">
+        </div>
+        <button class="btn" id="btnRegister" onclick="register(document.getElementById('newName').value)">Créer ma liste</button>
+      </div>`;
+    document.getElementById('newName').addEventListener('keydown', e=>{ if(e.key==='Enter') register(document.getElementById('newName').value); });
+  } catch(e){
+    document.getElementById('main').innerHTML=`<div class="empty"><span class="big">⚠️</span>Impossible de se connecter à la base de données.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function enterApp(){
+  document.getElementById('header').style.display='block';
+  document.getElementById('nav').style.display='flex';
+  document.getElementById('whoamiName').textContent = me.name;
+  showMine();
+}
+function setTab(which){
+  document.getElementById('tabMine').classList.toggle('active',which==='mine');
+  document.getElementById('tabOthers').classList.toggle('active',which==='others');
+}
+
+/* ===== ma liste ===== */
+window.showMine = async function(){
+  setTab('mine'); currentFriend=null; setLoading();
+  const list = await getWishlist(me.slug);
+  const items = list.map((b,i)=>`
+    <div class="book" style="--spine:${spine(i)}">
+      <div class="row">
+        <div>
+          <div class="title">${esc(b.title)}</div>
+          <div class="author">${esc(b.author)}</div>
+          ${hearts(b.hearts)}
+        </div>
+        <button class="del" onclick="removeBook('${b.id}')">✕</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('main').innerHTML = `
+    <div class="panel">
+      <h2>Ajouter un livre</h2>
+      <div class="field"><label for="bTitle">Titre</label>
+        <input type="text" id="bTitle" placeholder="Le nom du livre" maxlength="120"></div>
+      <div class="field"><label for="bAuthor">Auteur·ice</label>
+        <input type="text" id="bAuthor" placeholder="Son auteur ou autrice" maxlength="80"></div>
+      <div class="field"><label>À quel point le voulez-vous ?</label>
+        <div class="heart-pick" id="heartPick">
+          ${[1,2,3,4,5].map(n=>`<span data-n="${n}" class="${n<=pickedHearts?'on':''}" onclick="pickHearts(${n})">♥</span>`).join('')}
+        </div></div>
+      <button class="btn" id="btnAdd" onclick="addBook()">Ajouter à ma liste</button>
+    </div>
+    <div class="section-label">Ma liste — ${list.length} livre${list.length!==1?'s':''}</div>
+    ${items || `<div class="empty"><span class="big">📚</span>Votre liste est vide.<br>Ajoutez le premier livre dont vous rêvez !</div>`}`;
+};
+
+window.pickHearts = function(n){
+  pickedHearts=n;
+  document.querySelectorAll('#heartPick span').forEach(s=>s.classList.toggle('on',+s.dataset.n<=n));
+};
+
+window.addBook = async function(){
+  const title=document.getElementById('bTitle').value.trim();
+  const author=document.getElementById('bAuthor').value.trim();
+  if(!title){ toast('Indiquez le titre du livre'); return; }
+  if(!author){ toast("Indiquez l'auteur"); return; }
+  const btn=document.getElementById('btnAdd');
+  btn.disabled=true; btn.textContent='Ajout…';
+  try {
+    const list = await getWishlist(me.slug);
+    list.push({ id: Date.now()+'-'+Math.random().toString(36).slice(2,7), title, author, hearts:pickedHearts, boughtBy:null });
+    await saveWishlist(me.slug, list);
+    toast('Livre ajouté ✓');
+    showMine();
+  } catch(e){ toast('Erreur : '+e.message); btn.disabled=false; btn.textContent='Ajouter à ma liste'; }
+};
+
+window.removeBook = async function(id){
+  if(!confirm('Retirer ce livre de votre liste ?')) return;
+  const list = await getWishlist(me.slug);
+  await saveWishlist(me.slug, list.filter(b=>b.id!==id));
+  toast('Livre retiré');
+  showMine();
+};
+
+/* ===== listes des autres ===== */
+window.showOthers = async function(){
+  setTab('others'); currentFriend=null; setLoading();
+  const users = (await getUsers()).filter(u=>u.slug!==me.slug);
+  if(!users.length){
+    document.getElementById('main').innerHTML=`<div class="empty"><span class="big">🎁</span>Personne d'autre n'est encore inscrit.<br>Partagez l'application !</div>`;
+    return;
+  }
+  const rows=[];
+  for(const u of users){
+    const list = await getWishlist(u.slug);
+    const rem = list.filter(b=>!b.boughtBy).length;
+    rows.push(`<button class="user-pick" onclick="showFriend('${u.slug}')">
+      <span>${esc(u.name)}</span>
+      <span class="count">${rem} à offrir · ${list.length} au total</span>
+    </button>`);
+  }
+  document.getElementById('main').innerHTML = `
+    <div class="section-label">Choisissez une personne</div>
+    <div class="panel">${rows.join('')}</div>`;
+};
+
+window.showFriend = async function(slug){
+  setTab('others'); currentFriend=slug; setLoading();
+  const users = await getUsers();
+  const friend = users.find(u=>u.slug===slug);
+  if(!friend){ showOthers(); return; }
+  const list = await getWishlist(slug);
+  const wanted = list.filter(b=>!b.boughtBy).sort((a,b)=>b.hearts-a.hearts);
+  const bought = list.filter(b=>b.boughtBy);
+
+  const bookCard=(b,i,isBought)=>`
+    <div class="book ${isBought?'bought':''}" style="--spine:${spine(i)}">
+      <div class="title">${esc(b.title)}</div>
+      <div class="author">${esc(b.author)}</div>
+      ${hearts(b.hearts)}
+      ${isBought
+        ? `<span class="tag-offert">Déjà offert${b.boughtBy===me.slug?' par vous':''}</span>
+           ${b.boughtBy===me.slug?`<label class="buy-toggle"><input type="checkbox" checked onchange="toggleBought('${b.id}',false,'${slug}')"> Annuler</label>`:''}`
+        : `<label class="buy-toggle"><input type="checkbox" onchange="toggleBought('${b.id}',true,'${slug}')"> Je l'ai acheté 🎁</label>`}
+    </div>`;
+
+  document.getElementById('main').innerHTML = `
+    <button class="back" onclick="showOthers()">← Toutes les listes</button>
+    <div class="friend-head">La liste de ${esc(friend.name)}</div>
+    <div class="friend-sub">Classée du plus désiré au moins désiré. ${esc(friend.name)} ne verra pas ce que vous cochez — la surprise est préservée ✨</div>
+    ${wanted.length ? wanted.map((b,i)=>bookCard(b,i,false)).join('')
+      : `<div class="empty"><span class="big">✨</span>Tous les livres ont trouvé preneur !</div>`}
+    ${bought.length ? `<div class="section-label">Déjà offerts</div>${bought.map((b,i)=>bookCard(b,i,true)).join('')}` : ''}`;
+};
+
+window.toggleBought = async function(bookId, bought, slug){
+  try {
+    const list = await getWishlist(slug);
+    const b = list.find(x=>x.id===bookId);
+    if(!b){ toast('Livre introuvable'); showFriend(slug); return; }
+    if(bought && b.boughtBy && b.boughtBy!==me.slug){
+      toast("Quelqu'un vient de l'acheter !"); showFriend(slug); return;
+    }
+    b.boughtBy = bought ? me.slug : null;
+    await saveWishlist(slug, list);
+    toast(bought ? 'Marqué comme offert 🎁' : 'Annulé');
+    showFriend(slug);
+  } catch(e){ toast('Erreur : '+e.message); }
+};
+
+/* ===== init ===== */
+renderLogin();
+</script>
+</body>
+</html>
