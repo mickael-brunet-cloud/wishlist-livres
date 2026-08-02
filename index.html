@@ -7,36 +7,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink:#2D2438;--ink-soft:#57496B;--paper:#F7F3EC;--card:#FFFFFF;
-    --raspberry:#C93A5E;--sage:#7A8B6F;--gold:#C9973A;--line:#E4DDD2;
-    --radius:14px;--danger:#C93A5E;
-  }
+  :root{--ink:#2D2438;--ink-soft:#57496B;--paper:#F7F3EC;--card:#FFFFFF;--raspberry:#C93A5E;--sage:#7A8B6F;--gold:#C9973A;--line:#E4DDD2;--radius:14px;--danger:#C93A5E;}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{height:100%}
   body{font-family:'Karla',sans-serif;background:var(--ink);color:var(--ink);}
   #app{max-width:430px;margin:0 auto;min-height:100dvh;background:var(--paper);display:flex;flex-direction:column;}
-
-  /* header */
   header{background:var(--ink);color:var(--paper);padding:18px 20px 16px;}
   header .brand{font-family:'Fraunces',serif;font-weight:900;font-size:22px;}
   header .brand span{color:var(--raspberry)}
   header .whoami{margin-top:4px;font-size:13px;color:#BFB4D0;display:flex;align-items:center;gap:8px;}
   header .whoami button{background:none;border:1px solid #57496B;color:#BFB4D0;border-radius:20px;padding:2px 10px;font-size:12px;font-family:inherit;cursor:pointer;}
-
-  /* nav */
   nav{display:flex;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;}
   nav button{flex:1;padding:13px 0;border:none;background:none;font-family:'Karla',sans-serif;font-size:14px;font-weight:700;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;}
   nav button.active{color:var(--raspberry);border-bottom-color:var(--raspberry)}
   main{flex:1;padding:18px 16px 40px;overflow-y:auto}
-
-  /* login */
   .login-hero{text-align:center;padding:30px 10px 22px;}
   .login-hero h1{font-family:'Fraunces',serif;font-weight:900;font-size:30px;line-height:1.15;}
   .login-hero h1 em{font-style:italic;color:var(--raspberry)}
   .login-hero p{margin-top:10px;font-size:14px;color:var(--ink-soft);line-height:1.5}
-
-  /* panels / forms */
   .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
   .panel h2{font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:12px;}
   .field{margin-bottom:12px}
@@ -49,14 +37,11 @@
   .btn.danger{background:#fff;color:var(--danger);border:2px solid var(--danger);}
   .btn.secondary{background:var(--ink)}
   .btn.ghost{background:none;color:var(--raspberry);border:2px solid var(--raspberry);}
-
-  /* user picks */
   .user-pick{display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 14px;margin-bottom:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;}
   .user-pick:active{border-color:var(--raspberry)}
   .user-pick .count{font-size:12px;font-weight:500;color:var(--ink-soft)}
-
   /* book cards */
-  .book{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;display:flex;gap:0;}
+  .book{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;display:flex;}
   .book-cover{width:70px;min-width:70px;background:var(--spine,#7A8B6F);display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .book-cover img{width:70px;height:100%;object-fit:cover;display:block;}
   .book-cover .no-cover{color:rgba(255,255,255,.5);font-size:28px;padding:16px 0;}
@@ -75,40 +60,29 @@
   .tag-offert{display:inline-block;margin-top:6px;background:var(--sage);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
   .tag-self{display:inline-block;margin-top:6px;background:var(--gold);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
   .book-link{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:700;color:var(--raspberry);text-decoration:none;border:1.5px solid var(--raspberry);border-radius:20px;padding:3px 10px;}
-  .book-link:active{opacity:.7}
-
-  /* drag handle */
+  /* drag */
   .drag-handle{display:flex;align-items:center;justify-content:center;width:28px;background:var(--paper);border-right:1px solid var(--line);cursor:grab;color:var(--line);font-size:16px;user-select:none;}
   .drag-handle:active{cursor:grabbing;}
   .book.dragging{opacity:.4;border:2px dashed var(--raspberry);}
   .book.drag-over{border-top:3px solid var(--raspberry);}
-
-  /* category filters */
+  /* cover preview */
+  .cover-preview{width:60px;height:84px;border-radius:6px;overflow:hidden;border:2px solid var(--line);background:var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:10px;text-align:center;flex-shrink:0;}
+  .cover-preview img{width:100%;height:100%;object-fit:cover;}
+  /* categories */
   .cat-filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none;}
   .cat-filters::-webkit-scrollbar{display:none}
   .cat-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid var(--line);background:var(--card);font-family:'Karla',sans-serif;font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
   .cat-btn.active{background:var(--ink);color:#fff;border-color:var(--ink);}
-
-  /* cover search suggestions */
-  .cover-search-row{display:flex;gap:8px;margin-bottom:12px;}
-  .cover-search-row input{flex:1;}
-  .cover-search-row button{flex-shrink:0;padding:0 14px;border:none;border-radius:10px;background:var(--ink);color:#fff;font-family:'Karla',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-  .cover-results{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;scrollbar-width:none;}
-  .cover-results::-webkit-scrollbar{display:none}
-  .cover-opt{flex-shrink:0;width:60px;cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid transparent;}
-  .cover-opt:hover,.cover-opt.selected{border-color:var(--raspberry);}
-  .cover-opt img{width:60px;height:84px;object-fit:cover;display:block;}
-  .cover-preview{width:60px;height:84px;border-radius:6px;overflow:hidden;border:2px solid var(--line);margin-bottom:8px;background:var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:10px;text-align:center;}
-  .cover-preview img{width:100%;height:100%;object-fit:cover;}
-
-  /* section / misc */
+  /* misc */
   .section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ink-soft);margin:20px 0 10px;}
   .empty{text-align:center;padding:34px 18px;color:var(--ink-soft);font-size:14px;line-height:1.6;}
   .empty .big{font-size:34px;display:block;margin-bottom:8px}
   .back{background:none;border:none;color:var(--raspberry);font-family:'Karla',sans-serif;font-weight:700;font-size:14px;cursor:pointer;padding:0;margin-bottom:14px;}
   .friend-head{font-family:'Fraunces',serif;font-size:22px;font-weight:900;margin-bottom:2px;}
   .friend-sub{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
-
+  .heart-pick{display:flex;gap:6px;font-size:28px;cursor:pointer}
+  .heart-pick span{color:var(--line);}
+  .heart-pick span.on{color:var(--raspberry)}
   /* PIN / modal */
   .pin-wrap{display:flex;gap:12px;justify-content:center;margin:8px 0 14px;}
   .pin-dot{width:48px;height:56px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);font-size:22px;text-align:center;font-family:'Fraunces',serif;font-weight:700;color:var(--ink);caret-color:var(--raspberry);}
@@ -118,14 +92,13 @@
   .modal h3{font-family:'Fraunces',serif;font-size:20px;font-weight:900;margin-bottom:6px;}
   .modal p{font-size:14px;color:var(--ink-soft);margin-bottom:16px;line-height:1.5}
   .modal-btns{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
-
-  /* toast / loading */
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:24px;font-size:13px;font-weight:700;z-index:50;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;}
   .toast.show{opacity:1}
   .loading{text-align:center;padding:40px;color:var(--ink-soft);font-size:14px}
   .spinner{display:inline-block;width:24px;height:24px;border:3px solid var(--line);border-top-color:var(--raspberry);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px;}
   @keyframes spin{to{transform:rotate(360deg)}}
   .err{color:var(--raspberry);font-size:13px;font-weight:700;margin-top:-6px;margin-bottom:8px;text-align:center;}
+  .hint{font-size:12px;color:var(--ink-soft);line-height:1.5;margin-bottom:8px;}
 </style>
 </head>
 <body>
@@ -156,18 +129,12 @@ firebase.initializeApp({
 });
 const db = firebase.firestore();
 
-/* ============================================================
-   CONSTANTS
-============================================================ */
 const SPINES = ['#7A8B6F','#C9973A','#5B6FA8','#C93A5E','#8A5BA8','#3E7C7B'];
 const CATEGORIES = ['Roman','BD / Manga','Essai','Jeunesse','Policier','SF / Fantasy','Biographie','Autre'];
 let me = null, currentFriend = null, pickedHearts = 3;
 let pickedCat = 'Roman', selectedCoverUrl = '', activeCatFilter = 'Tous';
 let dragSrcIdx = null;
 
-/* ============================================================
-   HELPERS
-============================================================ */
 function slugify(n){ return n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'lecteur'; }
 function esc(s){ const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
 function toast(msg){ const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600); }
@@ -176,124 +143,22 @@ function spine(i){ return SPINES[i%SPINES.length]; }
 function setLoading(){ document.getElementById('main').innerHTML='<div class="loading"><div class="spinner"></div><br>Chargement…</div>'; }
 function closeOverlay(){ document.getElementById('overlayRoot').innerHTML=''; }
 
-/* ============================================================
-   FIRESTORE
-============================================================ */
 async function getUsers(){ const s=await db.collection('users').get();return s.docs.map(d=>d.data()); }
 async function getWishlist(slug){ const s=await db.collection('wishlists').doc(slug).get();return s.exists?(s.data().books||[]): []; }
 async function saveWishlist(slug,books){ await db.collection('wishlists').doc(slug).set({books},{merge:true}); }
 
-/* ============================================================
-   GOOGLE BOOKS COVER SEARCH
-============================================================ */
-async function searchCovers(query){
-  if(!query.trim()) return [];
-  // Les balises <img> ne sont pas bloquées par CORS.
-  // On génère des URLs candidates directement, sans fetch().
-  // Open Library : /search.json supporte CORS mais /covers ne le supporte pas — on utilise les URLs d'images directement.
-  const covers = [];
-  const q = encodeURIComponent(query);
-
-  // Open Library search (supporte CORS sur /search.json)
-  try{
-    const r = await fetch(`https://openlibrary.org/search.json?q=${q}&limit=15&fields=cover_i,isbn`, {mode:'cors'});
-    if(r.ok){
-      const d = await r.json();
-      if(d.docs){
-        for(const doc of d.docs){
-          if(doc.cover_i){
-            covers.push(`https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`);
-          }
-          if(doc.isbn){
-            for(const isbn of doc.isbn.slice(0,2)){
-              covers.push(`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`);
-            }
-          }
-        }
-      }
-    }
-  }catch(e){}
-
-  // Si rien via fetch, générer des URLs à tester via img.onload
-  if(!covers.length){
-    // Construire des URLs Open Library directement depuis le titre/auteur
-    const words = query.trim().split(/\s+/).slice(0,4).join('+');
-    covers.push(
-      `https://covers.openlibrary.org/b/olid/OL-M.jpg`,
-    );
-  }
-
-  return [...new Set(covers)].slice(0,12);
-}
-
-
-function renderCoverResults(covers){
-  const box = document.getElementById('coverResults');
-  if(!box) return;
-  if(!covers.length){
-    box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture trouvée — essayez avec le titre seul.</span>';
-    return;
-  }
-  // Afficher toutes les URLs candidates — masquées par défaut
-  // Seules celles qui chargent vraiment deviennent visibles
-  box.innerHTML = '<span style="font-size:12px;color:var(--ink-soft)">Chargement des couvertures…</span>';
-  let loaded = 0, shown = 0;
-  const total = covers.length;
-
-  covers.forEach((u, i)=>{
-    const wrap = document.createElement('div');
-    wrap.className = 'cover-opt' + (u===selectedCoverUrl?' selected':'');
-    wrap.dataset.url = u;
-    wrap.style.display = 'none';
-    const img = document.createElement('img');
-    img.alt = 'couverture';
-    img.loading = 'lazy';
-    img.onload = ()=>{
-      // Vérifier que c'est une vraie image (Open Library renvoie parfois une image 1x1 pour "pas trouvé")
-      if(img.naturalWidth > 10 && img.naturalHeight > 10){
-        wrap.style.display = '';
-        shown++;
-        if(shown === 1) box.querySelector('span') && box.querySelector('span').remove();
-        wrap.addEventListener('click',()=>{
-          selectedCoverUrl = wrap.dataset.url;
-          box.querySelectorAll('.cover-opt').forEach(x=>x.classList.remove('selected'));
-          wrap.classList.add('selected');
-          updateCoverPreview();
-        });
-      }
-      loaded++;
-      if(loaded === total && shown === 0){
-        box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture disponible — essayez avec le titre seul ou en anglais.</span>';
-      }
-    };
-    img.onerror = ()=>{
-      loaded++;
-      if(loaded === total && shown === 0){
-        box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture disponible — essayez avec le titre seul ou en anglais.</span>';
-      }
-    };
-    img.src = u;
-    wrap.appendChild(img);
-    box.appendChild(wrap);
-  });
-  // Retirer le message de chargement initial s'il n'y a pas encore eu d'erreur
-  const span = box.querySelector('span');
-  if(span) setTimeout(()=>{ if(shown === 0 && loaded === 0) {}; }, 5000);
-}
-
+/* ===== cover preview ===== */
 function updateCoverPreview(){
   const prev = document.getElementById('coverPreview');
   if(!prev) return;
   if(selectedCoverUrl){
-    prev.innerHTML=`<img src="${esc(selectedCoverUrl)}" alt="aperçu">`;
+    prev.innerHTML = `<img src="${esc(selectedCoverUrl)}" alt="aperçu" onerror="this.parentElement.innerHTML='<span>Introuvable</span>'">`;
   } else {
-    prev.innerHTML='<span>Aperçu</span>';
+    prev.innerHTML = '<span>Aperçu</span>';
   }
 }
 
-/* ============================================================
-   PIN MODAL
-============================================================ */
+/* ===== PIN modal ===== */
 function showPinModal({title,subtitle,onConfirm,danger=false}){
   const root=document.getElementById('overlayRoot');
   root.innerHTML=`
@@ -314,69 +179,61 @@ function showPinModal({title,subtitle,onConfirm,danger=false}){
   const dots=[0,1,2,3].map(i=>document.getElementById('p'+i));
   dots[0].focus();
   dots.forEach((d,i)=>{
-    d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,''); if(d.value&&i<3) dots[i+1].focus(); });
-    d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0){ dots[i-1].focus();dots[i-1].value=''; } });
+    d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,'');if(d.value&&i<3)dots[i+1].focus(); });
+    d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0){dots[i-1].focus();dots[i-1].value='';} });
   });
   document.getElementById('pinConfirm').addEventListener('click',()=>{
     const pin=dots.map(d=>d.value).join('');
-    if(pin.length<4){ document.getElementById('pinErr').textContent='Entrez les 4 chiffres'; return; }
+    if(pin.length<4){document.getElementById('pinErr').textContent='Entrez les 4 chiffres';return;}
     document.getElementById('pinErr').textContent='';
     onConfirm(pin);
   });
   document.getElementById('pinCancel').addEventListener('click',closeOverlay);
-  document.getElementById('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeOverlay(); });
+  document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeOverlay();});
 }
 
-/* ============================================================
-   NAV
-============================================================ */
+/* ===== nav ===== */
 document.getElementById('tabMine').addEventListener('click',showMine);
 document.getElementById('tabOthers').addEventListener('click',showOthers);
 document.getElementById('btnLogout').addEventListener('click',logout);
 function setTab(w){ document.getElementById('tabMine').classList.toggle('active',w==='mine');document.getElementById('tabOthers').classList.toggle('active',w==='others'); }
 
-/* ============================================================
-   AUTH
-============================================================ */
+/* ===== auth ===== */
 async function register(){
   const name=document.getElementById('newName').value.trim();
-  if(!name){ toast('Entrez un prénom'); return; }
+  if(!name){toast('Entrez un prénom');return;}
   const pin1=document.getElementById('newPin').value.trim();
   const pin2=document.getElementById('newPin2').value.trim();
-  if(pin1.length!==4||!/^\d{4}$/.test(pin1)){ toast('Le code PIN doit contenir 4 chiffres'); return; }
-  if(pin1!==pin2){ toast('Les codes PIN ne correspondent pas'); return; }
+  if(pin1.length!==4||!/^\d{4}$/.test(pin1)){toast('Le code PIN doit contenir 4 chiffres');return;}
+  if(pin1!==pin2){toast('Les codes PIN ne correspondent pas');return;}
   const btn=document.getElementById('btnRegister');
-  btn.disabled=true; btn.textContent='Création…';
+  btn.disabled=true;btn.textContent='Création…';
   try{
     const slug=slugify(name);
     const existing=await db.collection('users').doc(slug).get();
-    if(existing.exists){ toast('Ce prénom existe déjà'); btn.disabled=false; btn.textContent='Créer ma liste'; return; }
+    if(existing.exists){toast('Ce prénom existe déjà');btn.disabled=false;btn.textContent='Créer ma liste';return;}
     await db.collection('users').doc(slug).set({name,slug,pin:pin1});
-    me={name,slug}; enterApp();
-  }catch(e){ console.error(e);toast('Erreur : '+e.message);btn.disabled=false;btn.textContent='Créer ma liste'; }
+    me={name,slug};enterApp();
+  }catch(e){console.error(e);toast('Erreur : '+e.message);btn.disabled=false;btn.textContent='Créer ma liste';}
 }
 
 function askPin(user,onSuccess){
   const hasPin=user.pin&&user.pin.length===4;
   const effectivePin=hasPin?user.pin:'0000';
   const subtitle=hasPin
-    ? 'Entrez votre code PIN à 4 chiffres pour vous connecter.'
-    : 'Aucun PIN défini. Le code par défaut est <strong>0000</strong>. Pensez à le changer.';
+    ?'Entrez votre code PIN à 4 chiffres pour vous connecter.'
+    :'Aucun PIN défini. Le code par défaut est <strong>0000</strong>. Pensez à le changer.';
   showPinModal({
-    title:`Bonjour ${user.name} 👋`,
-    subtitle,
+    title:`Bonjour ${user.name} 👋`,subtitle,
     onConfirm:(pin)=>{
-      if(pin===effectivePin){ closeOverlay(); onSuccess(); }
+      if(pin===effectivePin){closeOverlay();onSuccess();}
       else document.getElementById('pinErr').textContent='Code PIN incorrect';
     }
   });
 }
+function logout(){me=null;currentFriend=null;activeCatFilter='Tous';renderLogin();}
 
-function logout(){ me=null; currentFriend=null; activeCatFilter='Tous'; renderLogin(); }
-
-/* ============================================================
-   LOGIN SCREEN
-============================================================ */
+/* ===== login ===== */
 async function renderLogin(){
   document.getElementById('header').style.display='none';
   document.getElementById('nav').style.display='none';
@@ -387,33 +244,25 @@ async function renderLogin(){
     for(const u of users){
       const list=await getWishlist(u.slug);
       const rem=list.filter(b=>!b.boughtBy||b.boughtBy==='__self__').length;
-      picks+=`<button class="user-pick" data-slug="${u.slug}">
-        <span>${esc(u.name)}</span>
-        <span class="count">${rem} à offrir</span>
-      </button>`;
+      picks+=`<button class="user-pick" data-slug="${u.slug}"><span>${esc(u.name)}</span><span class="count">${rem} à offrir</span></button>`;
     }
     document.getElementById('main').innerHTML=`
-      <div class="login-hero">
-        <h1>Entre les <em>pages</em></h1>
-        <p>Partagez votre liste de livres rêvés,<br>et offrez ceux des autres sans jamais vous tromper.</p>
-      </div>
+      <div class="login-hero"><h1>Entre les <em>pages</em></h1>
+        <p>Partagez votre liste de livres rêvés,<br>et offrez ceux des autres sans jamais vous tromper.</p></div>
       ${users.length?`<div class="panel"><h2>C'est vous ?</h2>${picks}</div>`:''}
       <div class="panel">
         <h2>${users.length?'Nouveau ? Inscrivez-vous':'Inscrivez-vous'}</h2>
-        <div class="field"><label for="newName">Votre prénom</label>
-          <input type="text" id="newName" placeholder="ex. Camille" maxlength="30"></div>
-        <div class="field"><label for="newPin">Code PIN (4 chiffres)</label>
-          <input type="password" id="newPin" inputmode="numeric" placeholder="••••" maxlength="4"></div>
-        <div class="field"><label for="newPin2">Confirmez le PIN</label>
-          <input type="password" id="newPin2" inputmode="numeric" placeholder="••••" maxlength="4"></div>
+        <div class="field"><label for="newName">Votre prénom</label><input type="text" id="newName" placeholder="ex. Camille" maxlength="30"></div>
+        <div class="field"><label for="newPin">Code PIN (4 chiffres)</label><input type="password" id="newPin" inputmode="numeric" placeholder="••••" maxlength="4"></div>
+        <div class="field"><label for="newPin2">Confirmez le PIN</label><input type="password" id="newPin2" inputmode="numeric" placeholder="••••" maxlength="4"></div>
         <button class="btn" id="btnRegister">Créer ma liste</button>
       </div>`;
     document.getElementById('btnRegister').addEventListener('click',register);
     document.querySelectorAll('.user-pick').forEach(btn=>{
       btn.addEventListener('click',async()=>{
         const u=users.find(u=>u.slug===btn.dataset.slug);
-        if(!u) return;
-        askPin(u,()=>{ me={name:u.name,slug:u.slug}; enterApp(); });
+        if(!u)return;
+        askPin(u,()=>{me={name:u.name,slug:u.slug};enterApp();});
       });
     });
   }catch(e){
@@ -429,35 +278,21 @@ function enterApp(){
   showMine();
 }
 
-/* ============================================================
-   MA LISTE
-============================================================ */
+/* ===== ma liste ===== */
 async function showMine(){
-  setTab('mine'); currentFriend=null; selectedCoverUrl=''; setLoading();
+  setTab('mine');currentFriend=null;selectedCoverUrl='';setLoading();
   const list=await getWishlist(me.slug);
-
-  // filtrer par catégorie
   const allCats=['Tous',...new Set(list.map(b=>b.cat||'Autre'))];
-  let filtered = activeCatFilter==='Tous' ? list : list.filter(b=>(b.cat||'Autre')===activeCatFilter);
-
-  const catFilters=allCats.map(c=>
-    `<button class="cat-btn${c===activeCatFilter?' active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  const filtered=activeCatFilter==='Tous'?list:list.filter(b=>(b.cat||'Autre')===activeCatFilter);
+  const catFilters=allCats.map(c=>`<button class="cat-btn${c===activeCatFilter?' active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
 
   const items=filtered.map((b,i)=>{
-    const isSelf=b.boughtBy==='__self__';
-    const isOffered=b.boughtBy&&b.boughtBy!=='__self__';
-    const statusTag=isSelf
-      ?`<span class="tag-self">Vous vous l'êtes offert 🛍</span>`
-      :isOffered?`<span class="tag-offert">Quelqu'un vous l'a offert 🎁</span>`:'';
-    const selfToggle=!isOffered?`
-      <label class="buy-toggle">
-        <input type="checkbox" class="selfBought" data-id="${b.id}" ${isSelf?'checked':''}> Je me le suis offert
-      </label>`:'';
-    const coverImg=b.cover
-      ?`<img src="${esc(b.cover)}" alt="couverture" loading="lazy">`
-      :`<div class="no-cover">📚</div>`;
+    const isSelf=b.boughtBy==='__self__', isOffered=b.boughtBy&&b.boughtBy!=='__self__';
+    const statusTag=isSelf?`<span class="tag-self">Vous vous l'êtes offert 🛍</span>`:isOffered?`<span class="tag-offert">Quelqu'un vous l'a offert 🎁</span>`:'';
+    const selfToggle=!isOffered?`<label class="buy-toggle"><input type="checkbox" class="selfBought" data-id="${b.id}" ${isSelf?'checked':''}> Je me le suis offert</label>`:'';
+    const coverImg=b.cover?`<img src="${esc(b.cover)}" alt="couverture" loading="lazy">`:`<div class="no-cover">📚</div>`;
     return `<div class="book ${(isSelf||isOffered)?'bought':''}" data-idx="${i}" draggable="true">
-      <div class="drag-handle" title="Déplacer">⠿</div>
+      <div class="drag-handle">⠿</div>
       <div class="book-cover" style="--spine:${spine(i)}">${coverImg}</div>
       <div class="book-body">
         <div class="brow">
@@ -466,9 +301,8 @@ async function showMine(){
             <div class="author">${esc(b.author)}</div>
             ${heartsHTML(b.hearts)}
             <span class="cat-tag">${esc(b.cat||'Autre')}</span>
-            ${statusTag}
             ${b.url?`<a class="book-link" href="${esc(b.url)}" target="_blank" rel="noopener">🛒 Voir le livre</a>`:''}
-            ${selfToggle}
+            ${statusTag}${selfToggle}
           </div>
           <button class="del" data-id="${b.id}">✕</button>
         </div>
@@ -479,295 +313,172 @@ async function showMine(){
   document.getElementById('main').innerHTML=`
     <div class="panel">
       <h2>Ajouter un livre</h2>
-      <div class="field"><label for="bTitle">Titre</label>
-        <input type="text" id="bTitle" placeholder="Le nom du livre" maxlength="120"></div>
-      <div class="field"><label for="bAuthor">Auteur·ice</label>
-        <input type="text" id="bAuthor" placeholder="Son auteur ou autrice" maxlength="80"></div>
+      <div class="field"><label for="bTitle">Titre</label><input type="text" id="bTitle" placeholder="Le nom du livre" maxlength="120"></div>
+      <div class="field"><label for="bAuthor">Auteur·ice</label><input type="text" id="bAuthor" placeholder="Son auteur ou autrice" maxlength="80"></div>
       <div class="field"><label>Catégorie</label>
         <select id="bCat">${CATEGORIES.map(c=>`<option${c===pickedCat?' selected':''}>${esc(c)}</option>`).join('')}</select></div>
-      <div class="field"><label for="bUrl">Lien vers le livre (optionnel)</label>
-        <input type="text" id="bUrl" placeholder="https://www.fnac.com/… ou amazon.fr/…" maxlength="500"></div>
       <div class="field"><label>À quel point le voulez-vous ?</label>
         <div class="heart-pick" id="heartPick">
           ${[1,2,3,4,5].map(n=>`<span data-n="${n}" class="${n<=pickedHearts?'on':''}">♥</span>`).join('')}
         </div></div>
-      <div class="field"><label>Couverture</label>
-        <div class="cover-search-row">
-          <input type="text" id="coverQuery" placeholder="Rechercher la couverture…">
-          <button id="btnSearchCover">Chercher</button>
+      <div class="field"><label>Couverture (optionnel)</label>
+        <p class="hint">Cherchez le livre sur <strong>Google Images</strong>, faites un clic droit sur la couverture → <em>"Copier l'adresse de l'image"</em>, puis collez l'adresse ici.</p>
+        <input type="text" id="coverUrlInput" placeholder="https://… (adresse de l'image)">
+        <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+          <div class="cover-preview" id="coverPreview"><span>Aperçu</span></div>
+          <button class="btn ghost" id="btnClearCover" style="font-size:13px;padding:8px;margin-top:0;width:auto">✕ Effacer</button>
         </div>
-        <div class="cover-results" id="coverResults"></div>
-        <div class="cover-preview" id="coverPreview"><span>Aperçu</span></div>
-        <button class="btn ghost" id="btnClearCover" style="font-size:13px;padding:8px;margin-top:0">✕ Supprimer la couverture</button>
       </div>
+      <div class="field"><label for="bUrl">Lien pour acheter (optionnel)</label>
+        <input type="text" id="bUrl" placeholder="https://www.fnac.com/… ou amazon.fr/…" maxlength="500"></div>
       <button class="btn" id="btnAdd">Ajouter à ma liste</button>
     </div>
-
     <div class="section-label">Ma liste — ${list.length} livre${list.length!==1?'s':''}</div>
     <div class="cat-filters" id="catFilters">${catFilters}</div>
-    ${filtered.length?items:`<div class="empty"><span class="big">📚</span>${list.length?'Aucun livre dans cette catégorie.':'Votre liste est vide.'}</div>`}
-
+    ${filtered.length?items:`<div class="empty"><span class="big">📚</span>${list.length?'Aucun livre dans cette catégorie.':'Votre liste est vide. Ajoutez votre premier livre !'}</div>`}
     <div class="section-label" style="margin-top:32px">Mon compte</div>
     <div class="panel">
       <button class="btn secondary" id="btnChangePin" style="margin-bottom:10px">🔑 Changer mon code PIN</button>
       <button class="btn danger" id="btnDelete">🗑 Supprimer mon compte</button>
     </div>`;
 
-  /* --- events --- */
   document.getElementById('btnAdd').addEventListener('click',addBook);
   document.getElementById('btnChangePin').addEventListener('click',changePin);
   document.getElementById('btnDelete').addEventListener('click',confirmDeleteAccount);
   document.getElementById('bCat').addEventListener('change',e=>pickedCat=e.target.value);
-  document.getElementById('btnSearchCover').addEventListener('click',async()=>{
-    const q=document.getElementById('coverQuery').value.trim();
-    if(!q){ toast('Entrez un titre à rechercher'); return; }
-    document.getElementById('coverResults').innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Recherche…</span>';
-    const covers=await searchCovers(q);
-    renderCoverResults(covers);
-  });
-  document.getElementById('coverQuery').addEventListener('keydown',async e=>{
-    if(e.key==='Enter'){
-      const q=e.target.value.trim();
-      if(!q) return;
-      document.getElementById('coverResults').innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Recherche…</span>';
-      const covers=await searchCovers(q);
-      renderCoverResults(covers);
-    }
-  });
-  document.getElementById('btnClearCover').addEventListener('click',()=>{ selectedCoverUrl=''; updateCoverPreview(); document.querySelectorAll('.cover-opt').forEach(x=>x.classList.remove('selected')); });
+  document.getElementById('coverUrlInput').addEventListener('input',e=>{selectedCoverUrl=e.target.value.trim();updateCoverPreview();});
+  document.getElementById('btnClearCover').addEventListener('click',()=>{selectedCoverUrl='';document.getElementById('coverUrlInput').value='';updateCoverPreview();});
   document.querySelectorAll('#heartPick span').forEach(s=>{
-    s.addEventListener('click',()=>{ pickedHearts=+s.dataset.n; document.querySelectorAll('#heartPick span').forEach(x=>x.classList.toggle('on',+x.dataset.n<=pickedHearts)); });
+    s.addEventListener('click',()=>{pickedHearts=+s.dataset.n;document.querySelectorAll('#heartPick span').forEach(x=>x.classList.toggle('on',+x.dataset.n<=pickedHearts));});
   });
-  document.querySelectorAll('.del').forEach(btn=>{
-    btn.addEventListener('click',()=>removeBook(btn.dataset.id));
-  });
-  document.querySelectorAll('.selfBought').forEach(cb=>{
-    cb.addEventListener('change',()=>toggleSelfBought(cb.dataset.id,cb.checked));
-  });
-  document.querySelectorAll('#catFilters .cat-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{ activeCatFilter=btn.dataset.cat; showMine(); });
-  });
-
-  /* auto-fill cover search from title */
-  async function autoSearchCover(){
-    const t=document.getElementById('bTitle').value.trim();
-    const a=document.getElementById('bAuthor').value.trim();
-    if(!t) return;
-    const q=t+(a?' '+a:'');
-    document.getElementById('coverQuery').value=q;
-    document.getElementById('coverResults').innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Recherche automatique…</span>';
-    const covers=await searchCovers(q);
-    renderCoverResults(covers);
-  }
-  document.getElementById('bTitle').addEventListener('blur', autoSearchCover);
-  document.getElementById('bAuthor').addEventListener('blur',()=>{
-    if(document.getElementById('bTitle').value.trim()) autoSearchCover();
-  });
-
-  /* drag & drop reorder */
-  setupDragDrop(list, filtered);
+  document.querySelectorAll('.del').forEach(btn=>btn.addEventListener('click',()=>removeBook(btn.dataset.id)));
+  document.querySelectorAll('.selfBought').forEach(cb=>cb.addEventListener('change',()=>toggleSelfBought(cb.dataset.id,cb.checked)));
+  document.querySelectorAll('#catFilters .cat-btn').forEach(btn=>btn.addEventListener('click',()=>{activeCatFilter=btn.dataset.cat;showMine();}));
+  setupDragDrop(list,filtered);
 }
 
-/* ============================================================
-   DRAG & DROP (reorder)
-============================================================ */
-function setupDragDrop(fullList, filtered){
-  const books=document.querySelectorAll('.book[draggable]');
-  books.forEach(el=>{
-    el.addEventListener('dragstart',e=>{
-      dragSrcIdx=+el.dataset.idx;
-      e.dataTransfer.effectAllowed='move';
-      el.classList.add('dragging');
-    });
-    el.addEventListener('dragend',()=>{ el.classList.remove('dragging'); document.querySelectorAll('.book').forEach(x=>x.classList.remove('drag-over')); });
-    el.addEventListener('dragover',e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; document.querySelectorAll('.book').forEach(x=>x.classList.remove('drag-over')); el.classList.add('drag-over'); });
+/* ===== drag & drop ===== */
+function setupDragDrop(fullList,filtered){
+  document.querySelectorAll('.book[draggable]').forEach(el=>{
+    el.addEventListener('dragstart',e=>{dragSrcIdx=+el.dataset.idx;e.dataTransfer.effectAllowed='move';el.classList.add('dragging');});
+    el.addEventListener('dragend',()=>{el.classList.remove('dragging');document.querySelectorAll('.book').forEach(x=>x.classList.remove('drag-over'));});
+    el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('.book').forEach(x=>x.classList.remove('drag-over'));el.classList.add('drag-over');});
     el.addEventListener('drop',async e=>{
       e.preventDefault();
       const destIdx=+el.dataset.idx;
-      if(dragSrcIdx===destIdx) return;
-      // réordonner dans la liste complète
-      const srcBook=filtered[dragSrcIdx];
-      const destBook=filtered[destIdx];
-      const si=fullList.indexOf(srcBook);
-      const di=fullList.indexOf(destBook);
-      fullList.splice(si,1);
-      fullList.splice(di,0,srcBook);
-      await saveWishlist(me.slug,fullList);
-      showMine();
+      if(dragSrcIdx===destIdx)return;
+      const si=fullList.indexOf(filtered[dragSrcIdx]);
+      const di=fullList.indexOf(filtered[destIdx]);
+      fullList.splice(si,1);fullList.splice(di,0,filtered[dragSrcIdx]);
+      await saveWishlist(me.slug,fullList);showMine();
     });
   });
 }
 
-/* ============================================================
-   ADD / REMOVE / TOGGLE BOOK
-============================================================ */
+/* ===== add / remove / toggle ===== */
 async function addBook(){
   const title=document.getElementById('bTitle').value.trim();
   const author=document.getElementById('bAuthor').value.trim();
   const cat=document.getElementById('bCat').value;
   let url=document.getElementById('bUrl').value.trim();
-  if(url && !/^https?:\/\//i.test(url)) url='https://'+url;
-  if(!title){ toast('Indiquez le titre du livre'); return; }
-  if(!author){ toast("Indiquez l'auteur"); return; }
-  const btn=document.getElementById('btnAdd');
-  btn.disabled=true; btn.textContent='Ajout…';
+  if(!title){toast('Indiquez le titre du livre');return;}
+  if(!author){toast("Indiquez l'auteur");return;}
+  if(url&&!/^https?:\/\//i.test(url))url='https://'+url;
+  const btn=document.getElementById('btnAdd');btn.disabled=true;btn.textContent='Ajout…';
   try{
     const list=await getWishlist(me.slug);
-    list.push({
-      id:Date.now()+'-'+Math.random().toString(36).slice(2,7),
-      title, author, cat, hearts:pickedHearts,
-      cover:selectedCoverUrl||null, url:url||null, boughtBy:null
-    });
-    await saveWishlist(me.slug,list);
-    selectedCoverUrl='';
-    toast('Livre ajouté ✓');
-    showMine();
-  }catch(e){ console.error(e);toast('Erreur : '+e.message);btn.disabled=false;btn.textContent='Ajouter à ma liste'; }
+    list.push({id:Date.now()+'-'+Math.random().toString(36).slice(2,7),title,author,cat,hearts:pickedHearts,cover:selectedCoverUrl||null,url:url||null,boughtBy:null});
+    await saveWishlist(me.slug,list);selectedCoverUrl='';toast('Livre ajouté ✓');showMine();
+  }catch(e){console.error(e);toast('Erreur : '+e.message);btn.disabled=false;btn.textContent='Ajouter à ma liste';}
 }
-
 async function removeBook(id){
-  if(!confirm('Retirer ce livre de votre liste ?')) return;
+  if(!confirm('Retirer ce livre ?'))return;
   const list=await getWishlist(me.slug);
-  await saveWishlist(me.slug,list.filter(b=>b.id!==id));
-  toast('Livre retiré'); showMine();
+  await saveWishlist(me.slug,list.filter(b=>b.id!==id));toast('Livre retiré');showMine();
 }
-
 async function toggleSelfBought(id,bought){
   try{
-    const list=await getWishlist(me.slug);
-    const b=list.find(x=>x.id===id);
-    if(!b) return;
-    b.boughtBy=bought?'__self__':null;
-    await saveWishlist(me.slug,list);
-    toast(bought?'Noté 🛍':'Retiré');
-    showMine();
-  }catch(e){ console.error(e);toast('Erreur : '+e.message); }
+    const list=await getWishlist(me.slug);const b=list.find(x=>x.id===id);if(!b)return;
+    b.boughtBy=bought?'__self__':null;await saveWishlist(me.slug,list);toast(bought?'Noté 🛍':'Retiré');showMine();
+  }catch(e){console.error(e);toast('Erreur : '+e.message);}
 }
 
-/* ============================================================
-   CHANGE PIN / DELETE ACCOUNT
-============================================================ */
+/* ===== change PIN ===== */
 function changePin(){
   const root=document.getElementById('overlayRoot');
-  root.innerHTML=`
-    <div class="overlay" id="overlay">
-      <div class="modal">
-        <h3>Changer mon code PIN</h3>
-        <p>Entrez d'abord votre code PIN actuel (0000 si jamais défini).</p>
-        <div class="pin-wrap">${[0,1,2,3].map(i=>`<input class="pin-dot" id="p${i}" type="password" inputmode="numeric" maxlength="1">`).join('')}</div>
-        <div class="err" id="pinErr"></div>
-        <div class="modal-btns">
-          <button class="btn" id="pinConfirm">Suivant</button>
-          <button class="btn secondary" id="pinCancel">Annuler</button>
-        </div>
-      </div>
-    </div>`;
-  const dots=[0,1,2,3].map(i=>document.getElementById('p'+i));
-  dots[0].focus();
-  dots.forEach((d,i)=>{ d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,'');if(d.value&&i<3)dots[i+1].focus(); });d.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!d.value&&i>0){dots[i-1].focus();dots[i-1].value='';}}); });
+  const mkDots=(pfx)=>[0,1,2,3].map(i=>`<input class="pin-dot" id="${pfx}${i}" type="password" inputmode="numeric" maxlength="1">`).join('');
+  const bindDots=(pfx)=>{
+    const dots=[0,1,2,3].map(i=>document.getElementById(pfx+i));
+    dots[0].focus();
+    dots.forEach((d,i)=>{d.addEventListener('input',()=>{d.value=d.value.replace(/\D/g,'');if(d.value&&i<3)dots[i+1].focus();});d.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!d.value&&i>0){dots[i-1].focus();dots[i-1].value='';}});});
+    return dots;
+  };
+  root.innerHTML=`<div class="overlay" id="overlay"><div class="modal"><h3>Changer mon code PIN</h3><p>Entrez d'abord votre code PIN actuel (0000 si jamais défini).</p><div class="pin-wrap">${mkDots('p')}</div><div class="err" id="pinErr"></div><div class="modal-btns"><button class="btn" id="pinConfirm">Suivant</button><button class="btn secondary" id="pinCancel">Annuler</button></div></div></div>`;
+  const dots=bindDots('p');
   document.getElementById('pinCancel').addEventListener('click',closeOverlay);
   document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeOverlay();});
   document.getElementById('pinConfirm').addEventListener('click',async()=>{
     const oldPin=dots.map(d=>d.value).join('');
     if(oldPin.length<4){document.getElementById('pinErr').textContent='Entrez les 4 chiffres';return;}
     const snap=await db.collection('users').doc(me.slug).get();
-    const stored=snap.data().pin||'0000';
-    if(oldPin!==stored){document.getElementById('pinErr').textContent='Code PIN incorrect';return;}
-    root.innerHTML=`
-      <div class="overlay" id="overlay">
-        <div class="modal">
-          <h3>Nouveau code PIN</h3>
-          <p>Choisissez votre nouveau code PIN à 4 chiffres.</p>
-          <div class="pin-wrap">${[0,1,2,3].map(i=>`<input class="pin-dot" id="n${i}" type="password" inputmode="numeric" maxlength="1">`).join('')}</div>
-          <div class="err" id="pinErr"></div>
-          <div class="modal-btns">
-            <button class="btn" id="pinConfirm">Enregistrer</button>
-            <button class="btn secondary" id="pinCancel">Annuler</button>
-          </div>
-        </div>
-      </div>`;
-    const nd=[0,1,2,3].map(i=>document.getElementById('n'+i));
-    nd[0].focus();
-    nd.forEach((d,i)=>{ d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,'');if(d.value&&i<3)nd[i+1].focus(); });d.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!d.value&&i>0){nd[i-1].focus();nd[i-1].value='';}}); });
+    if(oldPin!==(snap.data().pin||'0000')){document.getElementById('pinErr').textContent='Code PIN incorrect';return;}
+    root.innerHTML=`<div class="overlay" id="overlay"><div class="modal"><h3>Nouveau code PIN</h3><p>Choisissez votre nouveau code PIN à 4 chiffres.</p><div class="pin-wrap">${mkDots('n')}</div><div class="err" id="pinErr"></div><div class="modal-btns"><button class="btn" id="pinConfirm">Enregistrer</button><button class="btn secondary" id="pinCancel">Annuler</button></div></div></div>`;
+    const nd=bindDots('n');
     document.getElementById('pinCancel').addEventListener('click',closeOverlay);
     document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeOverlay();});
     document.getElementById('pinConfirm').addEventListener('click',async()=>{
       const newPin=nd.map(d=>d.value).join('');
       if(newPin.length<4){document.getElementById('pinErr').textContent='Entrez les 4 chiffres';return;}
-      try{ await db.collection('users').doc(me.slug).update({pin:newPin});closeOverlay();toast('Code PIN mis à jour ✓'); }
-      catch(e){ console.error(e);toast('Erreur : '+e.message); }
+      try{await db.collection('users').doc(me.slug).update({pin:newPin});closeOverlay();toast('Code PIN mis à jour ✓');}
+      catch(e){console.error(e);toast('Erreur : '+e.message);}
     });
   });
 }
 
 function confirmDeleteAccount(){
   showPinModal({
-    title:'Supprimer mon compte',
-    subtitle:'Cette action est irréversible. Entrez votre code PIN pour confirmer.',
-    danger:true,
+    title:'Supprimer mon compte',subtitle:'Cette action est irréversible. Entrez votre code PIN pour confirmer.',danger:true,
     onConfirm:async(pin)=>{
       const snap=await db.collection('users').doc(me.slug).get();
-      const stored=snap.data()?.pin||'0000';
-      if(pin!==stored){document.getElementById('pinErr').textContent='Code PIN incorrect';return;}
+      if(pin!==(snap.data()?.pin||'0000')){document.getElementById('pinErr').textContent='Code PIN incorrect';return;}
       closeOverlay();
-      try{
-        await db.collection('users').doc(me.slug).delete();
-        await db.collection('wishlists').doc(me.slug).delete();
-        toast('Compte supprimé');me=null;currentFriend=null;renderLogin();
-      }catch(e){ console.error(e);toast('Erreur : '+e.message); }
+      try{await db.collection('users').doc(me.slug).delete();await db.collection('wishlists').doc(me.slug).delete();toast('Compte supprimé');me=null;currentFriend=null;renderLogin();}
+      catch(e){console.error(e);toast('Erreur : '+e.message);}
     }
   });
 }
 
-/* ============================================================
-   OTHERS' LISTS
-============================================================ */
+/* ===== autres listes ===== */
 async function showOthers(){
-  setTab('others'); currentFriend=null; setLoading();
+  setTab('others');currentFriend=null;setLoading();
   const users=(await getUsers()).filter(u=>u.slug!==me.slug);
-  if(!users.length){
-    document.getElementById('main').innerHTML=`<div class="empty"><span class="big">🎁</span>Personne d'autre n'est encore inscrit.<br>Partagez l'application !</div>`;
-    return;
-  }
+  if(!users.length){document.getElementById('main').innerHTML=`<div class="empty"><span class="big">🎁</span>Personne d'autre n'est encore inscrit.<br>Partagez l'application !</div>`;return;}
   let rows='';
   for(const u of users){
     const list=await getWishlist(u.slug);
     const rem=list.filter(b=>!b.boughtBy||b.boughtBy==='__self__').length;
-    rows+=`<button class="user-pick" data-slug="${u.slug}">
-      <span>${esc(u.name)}</span>
-      <span class="count">${rem} à offrir · ${list.length} au total</span>
-    </button>`;
+    rows+=`<button class="user-pick" data-slug="${u.slug}"><span>${esc(u.name)}</span><span class="count">${rem} à offrir · ${list.length} au total</span></button>`;
   }
-  document.getElementById('main').innerHTML=`
-    <div class="section-label">Choisissez une personne</div>
-    <div class="panel">${rows}</div>`;
-  document.querySelectorAll('.user-pick').forEach(btn=>{
-    btn.addEventListener('click',()=>showFriend(btn.dataset.slug));
-  });
+  document.getElementById('main').innerHTML=`<div class="section-label">Choisissez une personne</div><div class="panel">${rows}</div>`;
+  document.querySelectorAll('.user-pick').forEach(btn=>btn.addEventListener('click',()=>showFriend(btn.dataset.slug)));
 }
 
 async function showFriend(slug){
-  setTab('others'); currentFriend=slug; setLoading();
-  const users=await getUsers();
-  const friend=users.find(u=>u.slug===slug);
-  if(!friend){ showOthers(); return; }
+  setTab('others');currentFriend=slug;setLoading();
+  const users=await getUsers();const friend=users.find(u=>u.slug===slug);
+  if(!friend){showOthers();return;}
   const list=await getWishlist(slug);
-
-  // catégories disponibles dans cette liste
   const friendCats=['Tous',...new Set(list.map(b=>b.cat||'Autre'))];
   const wanted=list.filter(b=>!b.boughtBy||b.boughtBy==='__self__').sort((a,b)=>b.hearts-a.hearts);
   const bought=list.filter(b=>b.boughtBy&&b.boughtBy!=='__self__');
-
-  let friendCatFilter=activeCatFilter==='Tous'?'Tous':activeCatFilter;
-  const filteredWanted=friendCatFilter==='Tous'?wanted:wanted.filter(b=>(b.cat||'Autre')===friendCatFilter);
-
-  const catBtns=friendCats.map(c=>
-    `<button class="cat-btn${c===friendCatFilter?' active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  const fCat=activeCatFilter;
+  const filteredWanted=fCat==='Tous'?wanted:wanted.filter(b=>(b.cat||'Autre')===fCat);
+  const catBtns=friendCats.map(c=>`<button class="cat-btn${c===fCat?' active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
 
   function bookCard(b,i,isBought){
     const selfBought=b.boughtBy==='__self__';
     const coverImg=b.cover?`<img src="${esc(b.cover)}" alt="couverture" loading="lazy">`:`<div class="no-cover">📚</div>`;
-    return `<div class="book ${(isBought||selfBought)?'bought':''}" style="">
+    return `<div class="book ${(isBought||selfBought)?'bought':''}">
       <div class="book-cover" style="--spine:${spine(i)}">${coverImg}</div>
       <div class="book-body">
         <div class="title">${esc(b.title)}</div>
@@ -789,36 +500,23 @@ async function showFriend(slug){
     <div class="friend-head">La liste de ${esc(friend.name)}</div>
     <div class="friend-sub">Classée du plus désiré au moins désiré. ${esc(friend.name)} ne verra pas ce que vous cochez ✨</div>
     <div class="cat-filters" id="friendCatFilters">${catBtns}</div>
-    ${filteredWanted.length
-      ?filteredWanted.map((b,i)=>bookCard(b,i,false)).join('')
-      :`<div class="empty"><span class="big">✨</span>${wanted.length?'Aucun livre dans cette catégorie.':'Tous les livres ont trouvé preneur !'}</div>`}
+    ${filteredWanted.length?filteredWanted.map((b,i)=>bookCard(b,i,false)).join(''):`<div class="empty"><span class="big">✨</span>${wanted.length?'Aucun livre dans cette catégorie.':'Tous les livres ont trouvé preneur !'}</div>`}
     ${bought.length?`<div class="section-label">Déjà offerts</div>${bought.map((b,i)=>bookCard(b,i,true)).join('')}`:''}`;
 
   document.getElementById('btnBack').addEventListener('click',showOthers);
-  document.querySelectorAll('.toggleBtn').forEach(cb=>{
-    cb.addEventListener('change',()=>toggleBought(cb.dataset.id,cb.dataset.bought==='1',slug));
-  });
-  document.querySelectorAll('#friendCatFilters .cat-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{ activeCatFilter=btn.dataset.cat; showFriend(slug); });
-  });
+  document.querySelectorAll('.toggleBtn').forEach(cb=>cb.addEventListener('change',()=>toggleBought(cb.dataset.id,cb.dataset.bought==='1',slug)));
+  document.querySelectorAll('#friendCatFilters .cat-btn').forEach(btn=>btn.addEventListener('click',()=>{activeCatFilter=btn.dataset.cat;showFriend(slug);}));
 }
 
 async function toggleBought(bookId,bought,slug){
   try{
-    const list=await getWishlist(slug);
-    const b=list.find(x=>x.id===bookId);
-    if(!b){ toast('Livre introuvable'); showFriend(slug); return; }
-    if(bought&&b.boughtBy&&b.boughtBy!==me.slug){ toast("Quelqu'un vient de l'acheter !"); showFriend(slug); return; }
-    b.boughtBy=bought?me.slug:null;
-    await saveWishlist(slug,list);
-    toast(bought?'Marqué comme offert 🎁':'Annulé');
-    showFriend(slug);
-  }catch(e){ console.error(e);toast('Erreur : '+e.message); }
+    const list=await getWishlist(slug);const b=list.find(x=>x.id===bookId);
+    if(!b){toast('Livre introuvable');showFriend(slug);return;}
+    if(bought&&b.boughtBy&&b.boughtBy!==me.slug){toast("Quelqu'un vient de l'acheter !");showFriend(slug);return;}
+    b.boughtBy=bought?me.slug:null;await saveWishlist(slug,list);toast(bought?'Marqué comme offert 🎁':'Annulé');showFriend(slug);
+  }catch(e){console.error(e);toast('Erreur : '+e.message);}
 }
 
-/* ============================================================
-   INIT
-============================================================ */
 renderLogin();
 </script>
 </body>
