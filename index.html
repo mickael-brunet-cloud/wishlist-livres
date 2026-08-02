@@ -188,26 +188,60 @@ async function saveWishlist(slug,books){ await db.collection('wishlists').doc(sl
 ============================================================ */
 async function searchCovers(query){
   if(!query.trim()) return [];
+  const covers = [];
+  // --- Google Books ---
   try{
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=8&fields=items(volumeInfo(imageLinks))`;
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10&langRestrict=fr`;
     const r = await fetch(url);
     const data = await r.json();
-    if(!data.items) return [];
-    return data.items
-      .map(it => it.volumeInfo?.imageLinks?.thumbnail || it.volumeInfo?.imageLinks?.smallThumbnail)
-      .filter(Boolean)
-      .map(u => u.replace('http://','https://').replace('&edge=curl','').replace('zoom=1','zoom=2'));
-  }catch(e){ return []; }
+    if(data.items){
+      for(const it of data.items){
+        const links = it.volumeInfo?.imageLinks;
+        if(!links) continue;
+        // Préférer la meilleure résolution disponible
+        const raw = links.large || links.medium || links.small || links.thumbnail || links.smallThumbnail;
+        if(!raw) continue;
+        const clean = raw
+          .replace('http://','https://')
+          .replace('&edge=curl','')
+          .replace(/zoom=\d/,'zoom=3');
+        if(!covers.includes(clean)) covers.push(clean);
+      }
+    }
+  }catch(e){ console.warn('Google Books error:', e); }
+
+  // --- Open Library (complément si peu de résultats) ---
+  if(covers.length < 4){
+    try{
+      const olUrl = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=8&fields=cover_i,title`;
+      const r2 = await fetch(olUrl);
+      const d2 = await r2.json();
+      if(d2.docs){
+        for(const doc of d2.docs){
+          if(doc.cover_i){
+            const cu = `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`;
+            if(!covers.includes(cu)) covers.push(cu);
+          }
+        }
+      }
+    }catch(e){ console.warn('Open Library error:', e); }
+  }
+  return covers.slice(0,10);
 }
 
 function renderCoverResults(covers){
   const box = document.getElementById('coverResults');
   if(!box) return;
-  if(!covers.length){ box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture trouvée</span>'; return; }
+  if(!covers.length){ box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture trouvée — essayez avec le titre seul ou en anglais.</span>'; return; }
   box.innerHTML = covers.map((u,i)=>
-    `<div class="cover-opt${u===selectedCoverUrl?' selected':''}" data-url="${esc(u)}">
+    `<div class="cover-opt${u===selectedCoverUrl?' selected':''}" data-url="${esc(u)}" style="display:none">
       <img src="${esc(u)}" loading="lazy" alt="couverture ${i+1}">
     </div>`).join('');
+  // n'afficher que les images qui chargent vraiment
+  box.querySelectorAll('.cover-opt img').forEach(img=>{
+    img.addEventListener('load',()=>{ img.parentElement.style.display=''; });
+    img.addEventListener('error',()=>{ img.parentElement.remove(); if(!box.querySelectorAll('.cover-opt').length) box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture trouvée — essayez le titre seul.</span>'; });
+  });
   box.querySelectorAll('.cover-opt').forEach(el=>{
     el.addEventListener('click',()=>{
       selectedCoverUrl = el.dataset.url;
@@ -486,10 +520,19 @@ async function showMine(){
   });
 
   /* auto-fill cover search from title */
-  document.getElementById('bTitle').addEventListener('blur',()=>{
+  async function autoSearchCover(){
     const t=document.getElementById('bTitle').value.trim();
     const a=document.getElementById('bAuthor').value.trim();
-    if(t&&!document.getElementById('coverQuery').value) document.getElementById('coverQuery').value=t+(a?' '+a:'');
+    if(!t) return;
+    const q=t+(a?' '+a:'');
+    document.getElementById('coverQuery').value=q;
+    document.getElementById('coverResults').innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Recherche automatique…</span>';
+    const covers=await searchCovers(q);
+    renderCoverResults(covers);
+  }
+  document.getElementById('bTitle').addEventListener('blur', autoSearchCover);
+  document.getElementById('bAuthor').addEventListener('blur',()=>{
+    if(document.getElementById('bTitle').value.trim()) autoSearchCover();
   });
 
   /* drag & drop reorder */
