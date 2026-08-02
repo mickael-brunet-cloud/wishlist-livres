@@ -190,18 +190,34 @@ async function searchCovers(query){
   if(!query.trim()) return [];
   const covers = [];
 
-  // --- 1. Open Library (priorité : fiable, sans clé, sans limite) ---
+  const GBOOKS_KEY = 'AIzaSyBFjJfHrl2cVzxTu37Y9VHFNIe3-CdoSvc';
+
+  // --- 1. Google Books avec clé API (résultats de qualité) ---
   try{
-    const r = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=12&fields=cover_i,isbn`);
+    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10&key=${GBOOKS_KEY}`);
+    const d = await r.json();
+    if(d.items){
+      for(const it of d.items){
+        const links = it.volumeInfo?.imageLinks;
+        if(!links) continue;
+        const raw = links.large || links.medium || links.small || links.thumbnail || links.smallThumbnail;
+        if(!raw) continue;
+        const clean = raw.replace('http://','https://').replace('&edge=curl','');
+        if(!covers.includes(clean)) covers.push(clean);
+      }
+    }
+  }catch(e){ console.warn('Google Books:', e); }
+
+  // --- 2. Open Library en complément ---
+  try{
+    const r = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10&fields=cover_i,isbn`);
     const d = await r.json();
     if(d.docs){
       for(const doc of d.docs){
-        // Priorité : couverture par cover_i
         if(doc.cover_i){
-          const u = `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`;
+          const u = `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`;
           if(!covers.includes(u)) covers.push(u);
         }
-        // Fallback : couverture par ISBN
         if(doc.isbn && doc.isbn.length){
           for(const isbn of doc.isbn.slice(0,2)){
             const u = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
@@ -211,23 +227,6 @@ async function searchCovers(query){
       }
     }
   }catch(e){ console.warn('Open Library:', e); }
-
-  // --- 2. Google Books en complément ---
-  try{
-    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
-    const d = await r.json();
-    if(d.items){
-      for(const it of d.items){
-        const links = it.volumeInfo?.imageLinks;
-        if(!links) continue;
-        const raw = links.thumbnail || links.smallThumbnail;
-        if(!raw) continue;
-        // Supprimer edge=curl qui bloque l'affichage et passer en HTTPS
-        const clean = raw.replace('http://','https://').replace('&edge=curl','');
-        if(!covers.includes(clean)) covers.push(clean);
-      }
-    }
-  }catch(e){ console.warn('Google Books:', e); }
 
   return covers.slice(0, 12);
 }
