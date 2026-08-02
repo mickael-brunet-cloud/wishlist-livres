@@ -7,72 +7,119 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#2D2438;--ink-soft:#57496B;--paper:#F7F3EC;--card:#FFFFFF;--raspberry:#C93A5E;--sage:#7A8B6F;--line:#E4DDD2;--radius:14px;--danger:#C93A5E;}
+  :root{
+    --ink:#2D2438;--ink-soft:#57496B;--paper:#F7F3EC;--card:#FFFFFF;
+    --raspberry:#C93A5E;--sage:#7A8B6F;--gold:#C9973A;--line:#E4DDD2;
+    --radius:14px;--danger:#C93A5E;
+  }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{height:100%}
   body{font-family:'Karla',sans-serif;background:var(--ink);color:var(--ink);}
   #app{max-width:430px;margin:0 auto;min-height:100dvh;background:var(--paper);display:flex;flex-direction:column;}
+
+  /* header */
   header{background:var(--ink);color:var(--paper);padding:18px 20px 16px;}
   header .brand{font-family:'Fraunces',serif;font-weight:900;font-size:22px;}
   header .brand span{color:var(--raspberry)}
   header .whoami{margin-top:4px;font-size:13px;color:#BFB4D0;display:flex;align-items:center;gap:8px;}
   header .whoami button{background:none;border:1px solid #57496B;color:#BFB4D0;border-radius:20px;padding:2px 10px;font-size:12px;font-family:inherit;cursor:pointer;}
+
+  /* nav */
   nav{display:flex;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;}
   nav button{flex:1;padding:13px 0;border:none;background:none;font-family:'Karla',sans-serif;font-size:14px;font-weight:700;color:var(--ink-soft);cursor:pointer;border-bottom:3px solid transparent;}
   nav button.active{color:var(--raspberry);border-bottom-color:var(--raspberry)}
   main{flex:1;padding:18px 16px 40px;overflow-y:auto}
+
+  /* login */
   .login-hero{text-align:center;padding:30px 10px 22px;}
   .login-hero h1{font-family:'Fraunces',serif;font-weight:900;font-size:30px;line-height:1.15;}
   .login-hero h1 em{font-style:italic;color:var(--raspberry)}
   .login-hero p{margin-top:10px;font-size:14px;color:var(--ink-soft);line-height:1.5}
+
+  /* panels / forms */
   .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
   .panel h2{font-family:'Fraunces',serif;font-size:17px;font-weight:700;margin-bottom:12px;}
   .field{margin-bottom:12px}
   .field label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-  input[type=text],input[type=password]{width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:10px;font-family:'Karla',sans-serif;font-size:16px;background:var(--paper);color:var(--ink);}
-  input[type=text]:focus,input[type=password]:focus{outline:none;border-color:var(--raspberry)}
+  input[type=text],input[type=password],select{width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:10px;font-family:'Karla',sans-serif;font-size:15px;background:var(--paper);color:var(--ink);appearance:none;}
+  input[type=text]:focus,input[type=password]:focus,select:focus{outline:none;border-color:var(--raspberry)}
   .btn{display:block;width:100%;padding:13px;border:none;border-radius:10px;background:var(--raspberry);color:#fff;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;}
   .btn:active{transform:scale(.985)}
   .btn:disabled{opacity:.5;cursor:not-allowed}
   .btn.danger{background:#fff;color:var(--danger);border:2px solid var(--danger);}
   .btn.secondary{background:var(--ink)}
+  .btn.ghost{background:none;color:var(--raspberry);border:2px solid var(--raspberry);}
+
+  /* user picks */
   .user-pick{display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 14px;margin-bottom:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;font-family:'Karla',sans-serif;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;}
   .user-pick:active{border-color:var(--raspberry)}
   .user-pick .count{font-size:12px;font-weight:500;color:var(--ink-soft)}
-  .book{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 14px 14px 22px;margin-bottom:10px;overflow:hidden;}
-  .book::before{content:'';position:absolute;left:0;top:0;bottom:0;width:9px;background:var(--spine,#7A8B6F);}
-  .book .title{font-family:'Fraunces',serif;font-weight:700;font-size:16px;line-height:1.25}
-  .book .author{font-size:13px;color:var(--ink-soft);margin-top:2px}
-  .book .hrow{margin-top:7px;font-size:15px;letter-spacing:2px;color:var(--raspberry)}
+
+  /* book cards */
+  .book{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;display:flex;gap:0;}
+  .book-cover{width:70px;min-width:70px;background:var(--spine,#7A8B6F);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .book-cover img{width:70px;height:100%;object-fit:cover;display:block;}
+  .book-cover .no-cover{color:rgba(255,255,255,.5);font-size:28px;padding:16px 0;}
+  .book-body{flex:1;padding:13px 13px 13px 14px;min-width:0;}
+  .book .title{font-family:'Fraunces',serif;font-weight:700;font-size:15px;line-height:1.25}
+  .book .author{font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .book .hrow{margin-top:6px;font-size:14px;letter-spacing:2px;color:var(--raspberry)}
   .book .hrow .off{color:var(--line)}
-  .book .row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-  .book .del{border:none;background:none;color:var(--ink-soft);font-size:18px;cursor:pointer;padding:2px 4px;}
+  .book .cat-tag{display:inline-block;margin-top:5px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--line);color:var(--ink-soft);}
+  .book .brow{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+  .book .del{border:none;background:none;color:var(--ink-soft);font-size:18px;cursor:pointer;padding:2px 4px;flex-shrink:0;}
   .book.bought{opacity:.65}
   .book.bought .title{text-decoration:line-through}
-  .buy-toggle{margin-top:10px;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;user-select:none;}
-  .buy-toggle input{width:20px;height:20px;accent-color:var(--sage);cursor:pointer}
-  .tag-offert{display:inline-block;margin-top:8px;background:var(--sage);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.4px;}
-  .tag-self{display:inline-block;margin-top:8px;background:var(--gold);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.4px;}
-  .heart-pick{display:flex;gap:6px;font-size:28px;cursor:pointer}
-  .heart-pick span{color:var(--line);}
-  .heart-pick span.on{color:var(--raspberry)}
+  .buy-toggle{margin-top:8px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;user-select:none;}
+  .buy-toggle input{width:18px;height:18px;accent-color:var(--sage);cursor:pointer;flex-shrink:0;}
+  .tag-offert{display:inline-block;margin-top:6px;background:var(--sage);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+  .tag-self{display:inline-block;margin-top:6px;background:var(--gold);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+  .book-link{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:700;color:var(--raspberry);text-decoration:none;border:1.5px solid var(--raspberry);border-radius:20px;padding:3px 10px;}
+  .book-link:active{opacity:.7}
+
+  /* drag handle */
+  .drag-handle{display:flex;align-items:center;justify-content:center;width:28px;background:var(--paper);border-right:1px solid var(--line);cursor:grab;color:var(--line);font-size:16px;user-select:none;}
+  .drag-handle:active{cursor:grabbing;}
+  .book.dragging{opacity:.4;border:2px dashed var(--raspberry);}
+  .book.drag-over{border-top:3px solid var(--raspberry);}
+
+  /* category filters */
+  .cat-filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none;}
+  .cat-filters::-webkit-scrollbar{display:none}
+  .cat-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid var(--line);background:var(--card);font-family:'Karla',sans-serif;font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
+  .cat-btn.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  /* cover search suggestions */
+  .cover-search-row{display:flex;gap:8px;margin-bottom:12px;}
+  .cover-search-row input{flex:1;}
+  .cover-search-row button{flex-shrink:0;padding:0 14px;border:none;border-radius:10px;background:var(--ink);color:#fff;font-family:'Karla',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+  .cover-results{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;scrollbar-width:none;}
+  .cover-results::-webkit-scrollbar{display:none}
+  .cover-opt{flex-shrink:0;width:60px;cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid transparent;}
+  .cover-opt:hover,.cover-opt.selected{border-color:var(--raspberry);}
+  .cover-opt img{width:60px;height:84px;object-fit:cover;display:block;}
+  .cover-preview{width:60px;height:84px;border-radius:6px;overflow:hidden;border:2px solid var(--line);margin-bottom:8px;background:var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:10px;text-align:center;}
+  .cover-preview img{width:100%;height:100%;object-fit:cover;}
+
+  /* section / misc */
   .section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ink-soft);margin:20px 0 10px;}
   .empty{text-align:center;padding:34px 18px;color:var(--ink-soft);font-size:14px;line-height:1.6;}
   .empty .big{font-size:34px;display:block;margin-bottom:8px}
   .back{background:none;border:none;color:var(--raspberry);font-family:'Karla',sans-serif;font-weight:700;font-size:14px;cursor:pointer;padding:0;margin-bottom:14px;}
   .friend-head{font-family:'Fraunces',serif;font-size:22px;font-weight:900;margin-bottom:2px;}
   .friend-sub{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
-  /* PIN dots */
+
+  /* PIN / modal */
   .pin-wrap{display:flex;gap:12px;justify-content:center;margin:8px 0 14px;}
   .pin-dot{width:48px;height:56px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);font-size:22px;text-align:center;font-family:'Fraunces',serif;font-weight:700;color:var(--ink);caret-color:var(--raspberry);}
   .pin-dot:focus{outline:none;border-color:var(--raspberry)}
-  /* modal overlay */
   .overlay{position:fixed;inset:0;background:rgba(45,36,56,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center;}
-  .modal{background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-width:430px;}
+  .modal{background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-width:430px;max-height:90dvh;overflow-y:auto;}
   .modal h3{font-family:'Fraunces',serif;font-size:20px;font-weight:900;margin-bottom:6px;}
   .modal p{font-size:14px;color:var(--ink-soft);margin-bottom:16px;line-height:1.5}
   .modal-btns{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
-  /* toast */
+
+  /* toast / loading */
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:24px;font-size:13px;font-weight:700;z-index:50;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;}
   .toast.show{opacity:1}
   .loading{text-align:center;padding:40px;color:var(--ink-soft);font-size:14px}
@@ -109,37 +156,90 @@ firebase.initializeApp({
 });
 const db = firebase.firestore();
 
-/* ===== constants ===== */
+/* ============================================================
+   CONSTANTS
+============================================================ */
 const SPINES = ['#7A8B6F','#C9973A','#5B6FA8','#C93A5E','#8A5BA8','#3E7C7B'];
+const CATEGORIES = ['Roman','BD / Manga','Essai','Jeunesse','Policier','SF / Fantasy','Biographie','Autre'];
 let me = null, currentFriend = null, pickedHearts = 3;
+let pickedCat = 'Roman', selectedCoverUrl = '', activeCatFilter = 'Tous';
+let dragSrcIdx = null;
 
-/* ===== helpers ===== */
+/* ============================================================
+   HELPERS
+============================================================ */
 function slugify(n){ return n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'lecteur'; }
 function esc(s){ const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
-function toast(msg){ const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2400); }
+function toast(msg){ const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600); }
 function heartsHTML(n){ let h='';for(let i=1;i<=5;i++) h+=i<=n?'♥':'<span class="off">♥</span>';return '<div class="hrow">'+h+'</div>'; }
 function spine(i){ return SPINES[i%SPINES.length]; }
 function setLoading(){ document.getElementById('main').innerHTML='<div class="loading"><div class="spinner"></div><br>Chargement…</div>'; }
 function closeOverlay(){ document.getElementById('overlayRoot').innerHTML=''; }
 
-/* ===== Firestore ===== */
+/* ============================================================
+   FIRESTORE
+============================================================ */
 async function getUsers(){ const s=await db.collection('users').get();return s.docs.map(d=>d.data()); }
 async function getWishlist(slug){ const s=await db.collection('wishlists').doc(slug).get();return s.exists?(s.data().books||[]): []; }
 async function saveWishlist(slug,books){ await db.collection('wishlists').doc(slug).set({books},{merge:true}); }
 
-/* ===== PIN modal ===== */
-function showPinModal({title, subtitle, onConfirm, danger=false}){
-  const root = document.getElementById('overlayRoot');
-  root.innerHTML = `
+/* ============================================================
+   GOOGLE BOOKS COVER SEARCH
+============================================================ */
+async function searchCovers(query){
+  if(!query.trim()) return [];
+  try{
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=8&fields=items(volumeInfo(imageLinks))`;
+    const r = await fetch(url);
+    const data = await r.json();
+    if(!data.items) return [];
+    return data.items
+      .map(it => it.volumeInfo?.imageLinks?.thumbnail || it.volumeInfo?.imageLinks?.smallThumbnail)
+      .filter(Boolean)
+      .map(u => u.replace('http://','https://').replace('&edge=curl','').replace('zoom=1','zoom=2'));
+  }catch(e){ return []; }
+}
+
+function renderCoverResults(covers){
+  const box = document.getElementById('coverResults');
+  if(!box) return;
+  if(!covers.length){ box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture trouvée</span>'; return; }
+  box.innerHTML = covers.map((u,i)=>
+    `<div class="cover-opt${u===selectedCoverUrl?' selected':''}" data-url="${esc(u)}">
+      <img src="${esc(u)}" loading="lazy" alt="couverture ${i+1}">
+    </div>`).join('');
+  box.querySelectorAll('.cover-opt').forEach(el=>{
+    el.addEventListener('click',()=>{
+      selectedCoverUrl = el.dataset.url;
+      box.querySelectorAll('.cover-opt').forEach(x=>x.classList.remove('selected'));
+      el.classList.add('selected');
+      updateCoverPreview();
+    });
+  });
+}
+
+function updateCoverPreview(){
+  const prev = document.getElementById('coverPreview');
+  if(!prev) return;
+  if(selectedCoverUrl){
+    prev.innerHTML=`<img src="${esc(selectedCoverUrl)}" alt="aperçu">`;
+  } else {
+    prev.innerHTML='<span>Aperçu</span>';
+  }
+}
+
+/* ============================================================
+   PIN MODAL
+============================================================ */
+function showPinModal({title,subtitle,onConfirm,danger=false}){
+  const root=document.getElementById('overlayRoot');
+  root.innerHTML=`
     <div class="overlay" id="overlay">
       <div class="modal">
         <h3>${title}</h3>
         <p>${subtitle}</p>
         <div class="pin-wrap">
-          <input class="pin-dot" id="p0" type="password" inputmode="numeric" maxlength="1">
-          <input class="pin-dot" id="p1" type="password" inputmode="numeric" maxlength="1">
-          <input class="pin-dot" id="p2" type="password" inputmode="numeric" maxlength="1">
-          <input class="pin-dot" id="p3" type="password" inputmode="numeric" maxlength="1">
+          ${[0,1,2,3].map(i=>`<input class="pin-dot" id="p${i}" type="password" inputmode="numeric" maxlength="1">`).join('')}
         </div>
         <div class="err" id="pinErr"></div>
         <div class="modal-btns">
@@ -148,39 +248,38 @@ function showPinModal({title, subtitle, onConfirm, danger=false}){
         </div>
       </div>
     </div>`;
-  // auto-focus and auto-advance
-  const dots = [0,1,2,3].map(i=>document.getElementById('p'+i));
+  const dots=[0,1,2,3].map(i=>document.getElementById('p'+i));
   dots[0].focus();
   dots.forEach((d,i)=>{
-    d.addEventListener('input',()=>{
-      d.value=d.value.replace(/\D/g,'');
-      if(d.value&&i<3) dots[i+1].focus();
-    });
-    d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0){ dots[i-1].focus(); dots[i-1].value=''; } });
+    d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,''); if(d.value&&i<3) dots[i+1].focus(); });
+    d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0){ dots[i-1].focus();dots[i-1].value=''; } });
   });
-  function getPin(){ return dots.map(d=>d.value).join(''); }
   document.getElementById('pinConfirm').addEventListener('click',()=>{
-    const pin=getPin();
+    const pin=dots.map(d=>d.value).join('');
     if(pin.length<4){ document.getElementById('pinErr').textContent='Entrez les 4 chiffres'; return; }
     document.getElementById('pinErr').textContent='';
     onConfirm(pin);
   });
-  document.getElementById('pinCancel').addEventListener('click', closeOverlay);
+  document.getElementById('pinCancel').addEventListener('click',closeOverlay);
   document.getElementById('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeOverlay(); });
 }
 
-/* ===== nav ===== */
-document.getElementById('tabMine').addEventListener('click', showMine);
-document.getElementById('tabOthers').addEventListener('click', showOthers);
-document.getElementById('btnLogout').addEventListener('click', logout);
+/* ============================================================
+   NAV
+============================================================ */
+document.getElementById('tabMine').addEventListener('click',showMine);
+document.getElementById('tabOthers').addEventListener('click',showOthers);
+document.getElementById('btnLogout').addEventListener('click',logout);
 function setTab(w){ document.getElementById('tabMine').classList.toggle('active',w==='mine');document.getElementById('tabOthers').classList.toggle('active',w==='others'); }
 
-/* ===== auth ===== */
+/* ============================================================
+   AUTH
+============================================================ */
 async function register(){
-  const name = document.getElementById('newName').value.trim();
+  const name=document.getElementById('newName').value.trim();
   if(!name){ toast('Entrez un prénom'); return; }
-  const pin1 = document.getElementById('newPin').value.trim();
-  const pin2 = document.getElementById('newPin2').value.trim();
+  const pin1=document.getElementById('newPin').value.trim();
+  const pin2=document.getElementById('newPin2').value.trim();
   if(pin1.length!==4||!/^\d{4}$/.test(pin1)){ toast('Le code PIN doit contenir 4 chiffres'); return; }
   if(pin1!==pin2){ toast('Les codes PIN ne correspondent pas'); return; }
   const btn=document.getElementById('btnRegister');
@@ -188,32 +287,33 @@ async function register(){
   try{
     const slug=slugify(name);
     const existing=await db.collection('users').doc(slug).get();
-    if(existing.exists){ toast('Ce prénom existe déjà, sélectionnez-le'); btn.disabled=false; btn.textContent='Créer ma liste'; return; }
+    if(existing.exists){ toast('Ce prénom existe déjà'); btn.disabled=false; btn.textContent='Créer ma liste'; return; }
     await db.collection('users').doc(slug).set({name,slug,pin:pin1});
-    me={name,slug};
-    enterApp();
+    me={name,slug}; enterApp();
   }catch(e){ console.error(e);toast('Erreur : '+e.message);btn.disabled=false;btn.textContent='Créer ma liste'; }
 }
 
-function askPin(user, onSuccess){
-  const hasPin = user.pin && user.pin.length === 4;
-  const effectivePin = hasPin ? user.pin : '0000';
-  const subtitle = hasPin
+function askPin(user,onSuccess){
+  const hasPin=user.pin&&user.pin.length===4;
+  const effectivePin=hasPin?user.pin:'0000';
+  const subtitle=hasPin
     ? 'Entrez votre code PIN à 4 chiffres pour vous connecter.'
-    : 'Aucun PIN défini sur ce compte. Le code par défaut est <strong>0000</strong>. Pensez à le changer dans vos paramètres.';
+    : 'Aucun PIN défini. Le code par défaut est <strong>0000</strong>. Pensez à le changer.';
   showPinModal({
-    title: `Bonjour ${user.name} 👋`,
+    title:`Bonjour ${user.name} 👋`,
     subtitle,
-    onConfirm: (pin)=>{
-      if(pin === effectivePin){ closeOverlay(); onSuccess(); }
-      else{ document.getElementById('pinErr').textContent='Code PIN incorrect'; }
+    onConfirm:(pin)=>{
+      if(pin===effectivePin){ closeOverlay(); onSuccess(); }
+      else document.getElementById('pinErr').textContent='Code PIN incorrect';
     }
   });
 }
 
-function logout(){ me=null; currentFriend=null; renderLogin(); }
+function logout(){ me=null; currentFriend=null; activeCatFilter='Tous'; renderLogin(); }
 
-/* ===== login screen ===== */
+/* ============================================================
+   LOGIN SCREEN
+============================================================ */
 async function renderLogin(){
   document.getElementById('header').style.display='none';
   document.getElementById('nav').style.display='none';
@@ -245,7 +345,7 @@ async function renderLogin(){
           <input type="password" id="newPin2" inputmode="numeric" placeholder="••••" maxlength="4"></div>
         <button class="btn" id="btnRegister">Créer ma liste</button>
       </div>`;
-    document.getElementById('btnRegister').addEventListener('click', register);
+    document.getElementById('btnRegister').addEventListener('click',register);
     document.querySelectorAll('.user-pick').forEach(btn=>{
       btn.addEventListener('click',async()=>{
         const u=users.find(u=>u.slug===btn.dataset.slug);
@@ -266,35 +366,53 @@ function enterApp(){
   showMine();
 }
 
-/* ===== ma liste ===== */
+/* ============================================================
+   MA LISTE
+============================================================ */
 async function showMine(){
-  setTab('mine'); currentFriend=null; setLoading();
+  setTab('mine'); currentFriend=null; selectedCoverUrl=''; setLoading();
   const list=await getWishlist(me.slug);
-  const items=list.map((b,i)=>{
-    const isSelf = b.boughtBy === '__self__';
-    const isOffered = b.boughtBy && b.boughtBy !== '__self__';
-    const statusTag = isSelf
-      ? `<span class="tag-self">Vous vous l'êtes offert 🛍</span>`
-      : isOffered
-        ? `<span class="tag-offert">Quelqu\'un vous l\'a offert 🎁</span>`
-        : '';
-    const selfToggle = !isOffered ? `
+
+  // filtrer par catégorie
+  const allCats=['Tous',...new Set(list.map(b=>b.cat||'Autre'))];
+  let filtered = activeCatFilter==='Tous' ? list : list.filter(b=>(b.cat||'Autre')===activeCatFilter);
+
+  const catFilters=allCats.map(c=>
+    `<button class="cat-btn${c===activeCatFilter?' active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+
+  const items=filtered.map((b,i)=>{
+    const isSelf=b.boughtBy==='__self__';
+    const isOffered=b.boughtBy&&b.boughtBy!=='__self__';
+    const statusTag=isSelf
+      ?`<span class="tag-self">Vous vous l'êtes offert 🛍</span>`
+      :isOffered?`<span class="tag-offert">Quelqu'un vous l'a offert 🎁</span>`:'';
+    const selfToggle=!isOffered?`
       <label class="buy-toggle">
         <input type="checkbox" class="selfBought" data-id="${b.id}" ${isSelf?'checked':''}> Je me le suis offert
-      </label>` : '';
-    return `<div class="book ${(isSelf||isOffered)?'bought':''}" style="--spine:${spine(i)}">
-      <div class="row">
-        <div>
-          <div class="title">${esc(b.title)}</div>
-          <div class="author">${esc(b.author)}</div>
-          ${heartsHTML(b.hearts)}
-          ${statusTag}
-          ${selfToggle}
+      </label>`:'';
+    const coverImg=b.cover
+      ?`<img src="${esc(b.cover)}" alt="couverture" loading="lazy">`
+      :`<div class="no-cover">📚</div>`;
+    return `<div class="book ${(isSelf||isOffered)?'bought':''}" data-idx="${i}" draggable="true">
+      <div class="drag-handle" title="Déplacer">⠿</div>
+      <div class="book-cover" style="--spine:${spine(i)}">${coverImg}</div>
+      <div class="book-body">
+        <div class="brow">
+          <div>
+            <div class="title">${esc(b.title)}</div>
+            <div class="author">${esc(b.author)}</div>
+            ${heartsHTML(b.hearts)}
+            <span class="cat-tag">${esc(b.cat||'Autre')}</span>
+            ${statusTag}
+            ${b.url?`<a class="book-link" href="${esc(b.url)}" target="_blank" rel="noopener">🛒 Voir le livre</a>`:''}
+            ${selfToggle}
+          </div>
+          <button class="del" data-id="${b.id}">✕</button>
         </div>
-        <button class="del" data-id="${b.id}">✕</button>
       </div>
     </div>`;
   }).join('');
+
   document.getElementById('main').innerHTML=`
     <div class="panel">
       <h2>Ajouter un livre</h2>
@@ -302,23 +420,58 @@ async function showMine(){
         <input type="text" id="bTitle" placeholder="Le nom du livre" maxlength="120"></div>
       <div class="field"><label for="bAuthor">Auteur·ice</label>
         <input type="text" id="bAuthor" placeholder="Son auteur ou autrice" maxlength="80"></div>
+      <div class="field"><label>Catégorie</label>
+        <select id="bCat">${CATEGORIES.map(c=>`<option${c===pickedCat?' selected':''}>${esc(c)}</option>`).join('')}</select></div>
+      <div class="field"><label for="bUrl">Lien vers le livre (optionnel)</label>
+        <input type="text" id="bUrl" placeholder="https://www.fnac.com/… ou amazon.fr/…" maxlength="500"></div>
       <div class="field"><label>À quel point le voulez-vous ?</label>
         <div class="heart-pick" id="heartPick">
           ${[1,2,3,4,5].map(n=>`<span data-n="${n}" class="${n<=pickedHearts?'on':''}">♥</span>`).join('')}
         </div></div>
+      <div class="field"><label>Couverture</label>
+        <div class="cover-search-row">
+          <input type="text" id="coverQuery" placeholder="Rechercher la couverture…">
+          <button id="btnSearchCover">Chercher</button>
+        </div>
+        <div class="cover-results" id="coverResults"></div>
+        <div class="cover-preview" id="coverPreview"><span>Aperçu</span></div>
+        <button class="btn ghost" id="btnClearCover" style="font-size:13px;padding:8px;margin-top:0">✕ Supprimer la couverture</button>
+      </div>
       <button class="btn" id="btnAdd">Ajouter à ma liste</button>
     </div>
+
     <div class="section-label">Ma liste — ${list.length} livre${list.length!==1?'s':''}</div>
-    ${items||`<div class="empty"><span class="big">📚</span>Votre liste est vide.<br>Ajoutez le premier livre dont vous rêvez !</div>`}
+    <div class="cat-filters" id="catFilters">${catFilters}</div>
+    ${filtered.length?items:`<div class="empty"><span class="big">📚</span>${list.length?'Aucun livre dans cette catégorie.':'Votre liste est vide.'}</div>`}
+
     <div class="section-label" style="margin-top:32px">Mon compte</div>
     <div class="panel">
       <button class="btn secondary" id="btnChangePin" style="margin-bottom:10px">🔑 Changer mon code PIN</button>
       <button class="btn danger" id="btnDelete">🗑 Supprimer mon compte</button>
     </div>`;
 
-  document.getElementById('btnAdd').addEventListener('click', addBook);
-  document.getElementById('btnChangePin').addEventListener('click', changePin);
-  document.getElementById('btnDelete').addEventListener('click', confirmDeleteAccount);
+  /* --- events --- */
+  document.getElementById('btnAdd').addEventListener('click',addBook);
+  document.getElementById('btnChangePin').addEventListener('click',changePin);
+  document.getElementById('btnDelete').addEventListener('click',confirmDeleteAccount);
+  document.getElementById('bCat').addEventListener('change',e=>pickedCat=e.target.value);
+  document.getElementById('btnSearchCover').addEventListener('click',async()=>{
+    const q=document.getElementById('coverQuery').value.trim();
+    if(!q){ toast('Entrez un titre à rechercher'); return; }
+    document.getElementById('coverResults').innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Recherche…</span>';
+    const covers=await searchCovers(q);
+    renderCoverResults(covers);
+  });
+  document.getElementById('coverQuery').addEventListener('keydown',async e=>{
+    if(e.key==='Enter'){
+      const q=e.target.value.trim();
+      if(!q) return;
+      document.getElementById('coverResults').innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Recherche…</span>';
+      const covers=await searchCovers(q);
+      renderCoverResults(covers);
+    }
+  });
+  document.getElementById('btnClearCover').addEventListener('click',()=>{ selectedCoverUrl=''; updateCoverPreview(); document.querySelectorAll('.cover-opt').forEach(x=>x.classList.remove('selected')); });
   document.querySelectorAll('#heartPick span').forEach(s=>{
     s.addEventListener('click',()=>{ pickedHearts=+s.dataset.n; document.querySelectorAll('#heartPick span').forEach(x=>x.classList.toggle('on',+x.dataset.n<=pickedHearts)); });
   });
@@ -326,33 +479,75 @@ async function showMine(){
     btn.addEventListener('click',()=>removeBook(btn.dataset.id));
   });
   document.querySelectorAll('.selfBought').forEach(cb=>{
-    cb.addEventListener('change',()=>toggleSelfBought(cb.dataset.id, cb.checked));
+    cb.addEventListener('change',()=>toggleSelfBought(cb.dataset.id,cb.checked));
+  });
+  document.querySelectorAll('#catFilters .cat-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{ activeCatFilter=btn.dataset.cat; showMine(); });
+  });
+
+  /* auto-fill cover search from title */
+  document.getElementById('bTitle').addEventListener('blur',()=>{
+    const t=document.getElementById('bTitle').value.trim();
+    const a=document.getElementById('bAuthor').value.trim();
+    if(t&&!document.getElementById('coverQuery').value) document.getElementById('coverQuery').value=t+(a?' '+a:'');
+  });
+
+  /* drag & drop reorder */
+  setupDragDrop(list, filtered);
+}
+
+/* ============================================================
+   DRAG & DROP (reorder)
+============================================================ */
+function setupDragDrop(fullList, filtered){
+  const books=document.querySelectorAll('.book[draggable]');
+  books.forEach(el=>{
+    el.addEventListener('dragstart',e=>{
+      dragSrcIdx=+el.dataset.idx;
+      e.dataTransfer.effectAllowed='move';
+      el.classList.add('dragging');
+    });
+    el.addEventListener('dragend',()=>{ el.classList.remove('dragging'); document.querySelectorAll('.book').forEach(x=>x.classList.remove('drag-over')); });
+    el.addEventListener('dragover',e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; document.querySelectorAll('.book').forEach(x=>x.classList.remove('drag-over')); el.classList.add('drag-over'); });
+    el.addEventListener('drop',async e=>{
+      e.preventDefault();
+      const destIdx=+el.dataset.idx;
+      if(dragSrcIdx===destIdx) return;
+      // réordonner dans la liste complète
+      const srcBook=filtered[dragSrcIdx];
+      const destBook=filtered[destIdx];
+      const si=fullList.indexOf(srcBook);
+      const di=fullList.indexOf(destBook);
+      fullList.splice(si,1);
+      fullList.splice(di,0,srcBook);
+      await saveWishlist(me.slug,fullList);
+      showMine();
+    });
   });
 }
 
-async function toggleSelfBought(id, bought){
-  try{
-    const list=await getWishlist(me.slug);
-    const b=list.find(x=>x.id===id);
-    if(!b) return;
-    b.boughtBy = bought ? '__self__' : null;
-    await saveWishlist(me.slug, list);
-    toast(bought ? 'Noté, vous vous l\'êtes offert ce livre 🛍' : 'Retiré');
-    showMine();
-  }catch(e){ console.error(e); toast('Erreur : '+e.message); }
-}
-
+/* ============================================================
+   ADD / REMOVE / TOGGLE BOOK
+============================================================ */
 async function addBook(){
   const title=document.getElementById('bTitle').value.trim();
   const author=document.getElementById('bAuthor').value.trim();
+  const cat=document.getElementById('bCat').value;
+  let url=document.getElementById('bUrl').value.trim();
+  if(url && !/^https?:\/\//i.test(url)) url='https://'+url;
   if(!title){ toast('Indiquez le titre du livre'); return; }
   if(!author){ toast("Indiquez l'auteur"); return; }
   const btn=document.getElementById('btnAdd');
   btn.disabled=true; btn.textContent='Ajout…';
   try{
     const list=await getWishlist(me.slug);
-    list.push({id:Date.now()+'-'+Math.random().toString(36).slice(2,7),title,author,hearts:pickedHearts,boughtBy:null});
+    list.push({
+      id:Date.now()+'-'+Math.random().toString(36).slice(2,7),
+      title, author, cat, hearts:pickedHearts,
+      cover:selectedCoverUrl||null, url:url||null, boughtBy:null
+    });
     await saveWishlist(me.slug,list);
+    selectedCoverUrl='';
     toast('Livre ajouté ✓');
     showMine();
   }catch(e){ console.error(e);toast('Erreur : '+e.message);btn.disabled=false;btn.textContent='Ajouter à ma liste'; }
@@ -362,24 +557,32 @@ async function removeBook(id){
   if(!confirm('Retirer ce livre de votre liste ?')) return;
   const list=await getWishlist(me.slug);
   await saveWishlist(me.slug,list.filter(b=>b.id!==id));
-  toast('Livre retiré');
-  showMine();
+  toast('Livre retiré'); showMine();
 }
 
+async function toggleSelfBought(id,bought){
+  try{
+    const list=await getWishlist(me.slug);
+    const b=list.find(x=>x.id===id);
+    if(!b) return;
+    b.boughtBy=bought?'__self__':null;
+    await saveWishlist(me.slug,list);
+    toast(bought?'Noté 🛍':'Retiré');
+    showMine();
+  }catch(e){ console.error(e);toast('Erreur : '+e.message); }
+}
+
+/* ============================================================
+   CHANGE PIN / DELETE ACCOUNT
+============================================================ */
 function changePin(){
-  // Étape 1 : vérifier l'ancien PIN
-  const root = document.getElementById('overlayRoot');
-  root.innerHTML = `
+  const root=document.getElementById('overlayRoot');
+  root.innerHTML=`
     <div class="overlay" id="overlay">
       <div class="modal">
         <h3>Changer mon code PIN</h3>
         <p>Entrez d'abord votre code PIN actuel (0000 si jamais défini).</p>
-        <div class="pin-wrap">
-          <input class="pin-dot" id="p0" type="password" inputmode="numeric" maxlength="1">
-          <input class="pin-dot" id="p1" type="password" inputmode="numeric" maxlength="1">
-          <input class="pin-dot" id="p2" type="password" inputmode="numeric" maxlength="1">
-          <input class="pin-dot" id="p3" type="password" inputmode="numeric" maxlength="1">
-        </div>
+        <div class="pin-wrap">${[0,1,2,3].map(i=>`<input class="pin-dot" id="p${i}" type="password" inputmode="numeric" maxlength="1">`).join('')}</div>
         <div class="err" id="pinErr"></div>
         <div class="modal-btns">
           <button class="btn" id="pinConfirm">Suivant</button>
@@ -389,30 +592,21 @@ function changePin(){
     </div>`;
   const dots=[0,1,2,3].map(i=>document.getElementById('p'+i));
   dots[0].focus();
-  dots.forEach((d,i)=>{
-    d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,''); if(d.value&&i<3) dots[i+1].focus(); });
-    d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0){ dots[i-1].focus();dots[i-1].value=''; } });
-  });
-  document.getElementById('pinCancel').addEventListener('click', closeOverlay);
-  document.getElementById('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeOverlay(); });
-  document.getElementById('pinConfirm').addEventListener('click', async()=>{
-    const oldPin = dots.map(d=>d.value).join('');
-    if(oldPin.length<4){ document.getElementById('pinErr').textContent='Entrez les 4 chiffres'; return; }
-    const snap = await db.collection('users').doc(me.slug).get();
-    const stored = snap.data().pin || '0000';
-    if(oldPin !== stored){ document.getElementById('pinErr').textContent='Code PIN incorrect'; return; }
-    // Étape 2 : saisir le nouveau PIN
-    root.innerHTML = `
+  dots.forEach((d,i)=>{ d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,'');if(d.value&&i<3)dots[i+1].focus(); });d.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!d.value&&i>0){dots[i-1].focus();dots[i-1].value='';}}); });
+  document.getElementById('pinCancel').addEventListener('click',closeOverlay);
+  document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeOverlay();});
+  document.getElementById('pinConfirm').addEventListener('click',async()=>{
+    const oldPin=dots.map(d=>d.value).join('');
+    if(oldPin.length<4){document.getElementById('pinErr').textContent='Entrez les 4 chiffres';return;}
+    const snap=await db.collection('users').doc(me.slug).get();
+    const stored=snap.data().pin||'0000';
+    if(oldPin!==stored){document.getElementById('pinErr').textContent='Code PIN incorrect';return;}
+    root.innerHTML=`
       <div class="overlay" id="overlay">
         <div class="modal">
           <h3>Nouveau code PIN</h3>
           <p>Choisissez votre nouveau code PIN à 4 chiffres.</p>
-          <div class="pin-wrap">
-            <input class="pin-dot" id="n0" type="password" inputmode="numeric" maxlength="1">
-            <input class="pin-dot" id="n1" type="password" inputmode="numeric" maxlength="1">
-            <input class="pin-dot" id="n2" type="password" inputmode="numeric" maxlength="1">
-            <input class="pin-dot" id="n3" type="password" inputmode="numeric" maxlength="1">
-          </div>
+          <div class="pin-wrap">${[0,1,2,3].map(i=>`<input class="pin-dot" id="n${i}" type="password" inputmode="numeric" maxlength="1">`).join('')}</div>
           <div class="err" id="pinErr"></div>
           <div class="modal-btns">
             <button class="btn" id="pinConfirm">Enregistrer</button>
@@ -422,20 +616,14 @@ function changePin(){
       </div>`;
     const nd=[0,1,2,3].map(i=>document.getElementById('n'+i));
     nd[0].focus();
-    nd.forEach((d,i)=>{
-      d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,''); if(d.value&&i<3) nd[i+1].focus(); });
-      d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0){ nd[i-1].focus();nd[i-1].value=''; } });
-    });
-    document.getElementById('pinCancel').addEventListener('click', closeOverlay);
-    document.getElementById('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeOverlay(); });
-    document.getElementById('pinConfirm').addEventListener('click', async()=>{
-      const newPin = nd.map(d=>d.value).join('');
-      if(newPin.length<4){ document.getElementById('pinErr').textContent='Entrez les 4 chiffres'; return; }
-      try{
-        await db.collection('users').doc(me.slug).update({ pin: newPin });
-        closeOverlay();
-        toast('Code PIN mis à jour ✓');
-      }catch(e){ console.error(e); toast('Erreur : '+e.message); }
+    nd.forEach((d,i)=>{ d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/g,'');if(d.value&&i<3)nd[i+1].focus(); });d.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!d.value&&i>0){nd[i-1].focus();nd[i-1].value='';}}); });
+    document.getElementById('pinCancel').addEventListener('click',closeOverlay);
+    document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeOverlay();});
+    document.getElementById('pinConfirm').addEventListener('click',async()=>{
+      const newPin=nd.map(d=>d.value).join('');
+      if(newPin.length<4){document.getElementById('pinErr').textContent='Entrez les 4 chiffres';return;}
+      try{ await db.collection('users').doc(me.slug).update({pin:newPin});closeOverlay();toast('Code PIN mis à jour ✓'); }
+      catch(e){ console.error(e);toast('Erreur : '+e.message); }
     });
   });
 }
@@ -443,27 +631,25 @@ function changePin(){
 function confirmDeleteAccount(){
   showPinModal({
     title:'Supprimer mon compte',
-    subtitle:'Cette action est irréversible. Entrez votre code PIN pour confirmer la suppression de votre compte et de toute votre liste.',
+    subtitle:'Cette action est irréversible. Entrez votre code PIN pour confirmer.',
     danger:true,
-    onConfirm: async(pin)=>{
+    onConfirm:async(pin)=>{
       const snap=await db.collection('users').doc(me.slug).get();
-      if(!snap.exists||snap.data().pin!==pin){
-        document.getElementById('pinErr').textContent='Code PIN incorrect';
-        return;
-      }
+      const stored=snap.data()?.pin||'0000';
+      if(pin!==stored){document.getElementById('pinErr').textContent='Code PIN incorrect';return;}
       closeOverlay();
       try{
         await db.collection('users').doc(me.slug).delete();
         await db.collection('wishlists').doc(me.slug).delete();
-        toast('Compte supprimé');
-        me=null; currentFriend=null;
-        renderLogin();
-      }catch(e){ console.error(e); toast('Erreur : '+e.message); }
+        toast('Compte supprimé');me=null;currentFriend=null;renderLogin();
+      }catch(e){ console.error(e);toast('Erreur : '+e.message); }
     }
   });
 }
 
-/* ===== listes des autres ===== */
+/* ============================================================
+   OTHERS' LISTS
+============================================================ */
 async function showOthers(){
   setTab('others'); currentFriend=null; setLoading();
   const users=(await getUsers()).filter(u=>u.slug!==me.slug);
@@ -494,21 +680,35 @@ async function showFriend(slug){
   const friend=users.find(u=>u.slug===slug);
   if(!friend){ showOthers(); return; }
   const list=await getWishlist(slug);
+
+  // catégories disponibles dans cette liste
+  const friendCats=['Tous',...new Set(list.map(b=>b.cat||'Autre'))];
   const wanted=list.filter(b=>!b.boughtBy||b.boughtBy==='__self__').sort((a,b)=>b.hearts-a.hearts);
   const bought=list.filter(b=>b.boughtBy&&b.boughtBy!=='__self__');
 
+  let friendCatFilter=activeCatFilter==='Tous'?'Tous':activeCatFilter;
+  const filteredWanted=friendCatFilter==='Tous'?wanted:wanted.filter(b=>(b.cat||'Autre')===friendCatFilter);
+
+  const catBtns=friendCats.map(c=>
+    `<button class="cat-btn${c===friendCatFilter?' active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+
   function bookCard(b,i,isBought){
-    const selfBought = b.boughtBy === '__self__';
-    const selfTag = selfBought ? `<span class="tag-self" title="Cette personne se l'est offerte">Se l'est offert 🛍</span>` : '';
-    return `<div class="book ${(isBought||selfBought)?'bought':''}" style="--spine:${spine(i)}">
-      <div class="title">${esc(b.title)}</div>
-      <div class="author">${esc(b.author)}</div>
-      ${heartsHTML(b.hearts)}
-      ${selfTag}
-      ${isBought
-        ?`<span class="tag-offert">Offert${b.boughtBy===me.slug?' par vous':''}</span>
-          ${b.boughtBy===me.slug?`<label class="buy-toggle"><input type="checkbox" checked class="toggleBtn" data-id="${b.id}" data-bought="0"> Annuler</label>`:''}`
-        : !selfBought ? `<label class="buy-toggle"><input type="checkbox" class="toggleBtn" data-id="${b.id}" data-bought="1"> Je l'ai acheté 🎁</label>` : ''}
+    const selfBought=b.boughtBy==='__self__';
+    const coverImg=b.cover?`<img src="${esc(b.cover)}" alt="couverture" loading="lazy">`:`<div class="no-cover">📚</div>`;
+    return `<div class="book ${(isBought||selfBought)?'bought':''}" style="">
+      <div class="book-cover" style="--spine:${spine(i)}">${coverImg}</div>
+      <div class="book-body">
+        <div class="title">${esc(b.title)}</div>
+        <div class="author">${esc(b.author)}</div>
+        ${heartsHTML(b.hearts)}
+        <span class="cat-tag">${esc(b.cat||'Autre')}</span>
+        ${selfBought?`<span class="tag-self">Se l'est offert 🛍</span>`:''}
+        ${b.url?`<a class="book-link" href="${esc(b.url)}" target="_blank" rel="noopener">🛒 Voir le livre</a>`:''}
+        ${isBought
+          ?`<span class="tag-offert">Offert${b.boughtBy===me.slug?' par vous':''}</span>
+            ${b.boughtBy===me.slug?`<label class="buy-toggle"><input type="checkbox" checked class="toggleBtn" data-id="${b.id}" data-bought="0"> Annuler</label>`:''}`
+          :!selfBought?`<label class="buy-toggle"><input type="checkbox" class="toggleBtn" data-id="${b.id}" data-bought="1"> Je l'ai acheté 🎁</label>`:''}
+      </div>
     </div>`;
   }
 
@@ -516,12 +716,18 @@ async function showFriend(slug){
     <button class="back" id="btnBack">← Toutes les listes</button>
     <div class="friend-head">La liste de ${esc(friend.name)}</div>
     <div class="friend-sub">Classée du plus désiré au moins désiré. ${esc(friend.name)} ne verra pas ce que vous cochez ✨</div>
-    ${wanted.length?wanted.map((b,i)=>bookCard(b,i,false)).join(''):`<div class="empty"><span class="big">✨</span>Tous les livres ont trouvé preneur !</div>`}
+    <div class="cat-filters" id="friendCatFilters">${catBtns}</div>
+    ${filteredWanted.length
+      ?filteredWanted.map((b,i)=>bookCard(b,i,false)).join('')
+      :`<div class="empty"><span class="big">✨</span>${wanted.length?'Aucun livre dans cette catégorie.':'Tous les livres ont trouvé preneur !'}</div>`}
     ${bought.length?`<div class="section-label">Déjà offerts</div>${bought.map((b,i)=>bookCard(b,i,true)).join('')}`:''}`;
 
   document.getElementById('btnBack').addEventListener('click',showOthers);
   document.querySelectorAll('.toggleBtn').forEach(cb=>{
     cb.addEventListener('change',()=>toggleBought(cb.dataset.id,cb.dataset.bought==='1',slug));
+  });
+  document.querySelectorAll('#friendCatFilters .cat-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{ activeCatFilter=btn.dataset.cat; showFriend(slug); });
   });
 }
 
@@ -538,7 +744,9 @@ async function toggleBought(bookId,bought,slug){
   }catch(e){ console.error(e);toast('Erreur : '+e.message); }
 }
 
-/* ===== init ===== */
+/* ============================================================
+   INIT
+============================================================ */
 renderLogin();
 </script>
 </body>
