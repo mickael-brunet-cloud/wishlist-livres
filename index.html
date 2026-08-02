@@ -189,45 +189,49 @@ async function saveWishlist(slug,books){ await db.collection('wishlists').doc(sl
 async function searchCovers(query){
   if(!query.trim()) return [];
   const covers = [];
-  // --- Google Books ---
-  try{
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10&langRestrict=fr`;
-    const r = await fetch(url);
-    const data = await r.json();
-    if(data.items){
-      for(const it of data.items){
-        const links = it.volumeInfo?.imageLinks;
-        if(!links) continue;
-        // Préférer la meilleure résolution disponible
-        const raw = links.large || links.medium || links.small || links.thumbnail || links.smallThumbnail;
-        if(!raw) continue;
-        const clean = raw
-          .replace('http://','https://')
-          .replace('&edge=curl','')
-          .replace(/zoom=\d/,'zoom=3');
-        if(!covers.includes(clean)) covers.push(clean);
-      }
-    }
-  }catch(e){ console.warn('Google Books error:', e); }
 
-  // --- Open Library (complément si peu de résultats) ---
-  if(covers.length < 4){
-    try{
-      const olUrl = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=8&fields=cover_i,title`;
-      const r2 = await fetch(olUrl);
-      const d2 = await r2.json();
-      if(d2.docs){
-        for(const doc of d2.docs){
-          if(doc.cover_i){
-            const cu = `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`;
-            if(!covers.includes(cu)) covers.push(cu);
+  // --- 1. Open Library (priorité : fiable, sans clé, sans limite) ---
+  try{
+    const r = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=12&fields=cover_i,isbn`);
+    const d = await r.json();
+    if(d.docs){
+      for(const doc of d.docs){
+        // Priorité : couverture par cover_i
+        if(doc.cover_i){
+          const u = `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`;
+          if(!covers.includes(u)) covers.push(u);
+        }
+        // Fallback : couverture par ISBN
+        if(doc.isbn && doc.isbn.length){
+          for(const isbn of doc.isbn.slice(0,2)){
+            const u = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
+            if(!covers.includes(u)) covers.push(u);
           }
         }
       }
-    }catch(e){ console.warn('Open Library error:', e); }
-  }
-  return covers.slice(0,10);
+    }
+  }catch(e){ console.warn('Open Library:', e); }
+
+  // --- 2. Google Books en complément ---
+  try{
+    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`);
+    const d = await r.json();
+    if(d.items){
+      for(const it of d.items){
+        const links = it.volumeInfo?.imageLinks;
+        if(!links) continue;
+        const raw = links.thumbnail || links.smallThumbnail;
+        if(!raw) continue;
+        // Supprimer edge=curl qui bloque l'affichage et passer en HTTPS
+        const clean = raw.replace('http://','https://').replace('&edge=curl','');
+        if(!covers.includes(clean)) covers.push(clean);
+      }
+    }
+  }catch(e){ console.warn('Google Books:', e); }
+
+  return covers.slice(0, 12);
 }
+
 
 function renderCoverResults(covers){
   const box = document.getElementById('coverResults');
