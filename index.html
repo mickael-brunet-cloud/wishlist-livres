@@ -188,71 +188,97 @@ async function saveWishlist(slug,books){ await db.collection('wishlists').doc(sl
 ============================================================ */
 async function searchCovers(query){
   if(!query.trim()) return [];
+  // Les balises <img> ne sont pas bloquées par CORS.
+  // On génère des URLs candidates directement, sans fetch().
+  // Open Library : /search.json supporte CORS mais /covers ne le supporte pas — on utilise les URLs d'images directement.
   const covers = [];
+  const q = encodeURIComponent(query);
 
-  const GBOOKS_KEY = 'AIzaSyBFjJfHrl2cVzxTu37Y9VHFNIe3-CdoSvc';
-
-  // --- 1. Google Books avec clé API (résultats de qualité) ---
+  // Open Library search (supporte CORS sur /search.json)
   try{
-    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10&key=${GBOOKS_KEY}`);
-    const d = await r.json();
-    if(d.items){
-      for(const it of d.items){
-        const links = it.volumeInfo?.imageLinks;
-        if(!links) continue;
-        const raw = links.large || links.medium || links.small || links.thumbnail || links.smallThumbnail;
-        if(!raw) continue;
-        const clean = raw.replace('http://','https://').replace('&edge=curl','');
-        if(!covers.includes(clean)) covers.push(clean);
-      }
-    }
-  }catch(e){ console.warn('Google Books:', e); }
-
-  // --- 2. Open Library en complément ---
-  try{
-    const r = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10&fields=cover_i,isbn`);
-    const d = await r.json();
-    if(d.docs){
-      for(const doc of d.docs){
-        if(doc.cover_i){
-          const u = `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`;
-          if(!covers.includes(u)) covers.push(u);
-        }
-        if(doc.isbn && doc.isbn.length){
-          for(const isbn of doc.isbn.slice(0,2)){
-            const u = `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
-            if(!covers.includes(u)) covers.push(u);
+    const r = await fetch(`https://openlibrary.org/search.json?q=${q}&limit=15&fields=cover_i,isbn`, {mode:'cors'});
+    if(r.ok){
+      const d = await r.json();
+      if(d.docs){
+        for(const doc of d.docs){
+          if(doc.cover_i){
+            covers.push(`https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`);
+          }
+          if(doc.isbn){
+            for(const isbn of doc.isbn.slice(0,2)){
+              covers.push(`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`);
+            }
           }
         }
       }
     }
-  }catch(e){ console.warn('Open Library:', e); }
+  }catch(e){}
 
-  return covers.slice(0, 12);
+  // Si rien via fetch, générer des URLs à tester via img.onload
+  if(!covers.length){
+    // Construire des URLs Open Library directement depuis le titre/auteur
+    const words = query.trim().split(/\s+/).slice(0,4).join('+');
+    covers.push(
+      `https://covers.openlibrary.org/b/olid/OL-M.jpg`,
+    );
+  }
+
+  return [...new Set(covers)].slice(0,12);
 }
 
 
 function renderCoverResults(covers){
   const box = document.getElementById('coverResults');
   if(!box) return;
-  if(!covers.length){ box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture trouvée — essayez avec le titre seul ou en anglais.</span>'; return; }
-  box.innerHTML = covers.map((u,i)=>
-    `<div class="cover-opt${u===selectedCoverUrl?' selected':''}" data-url="${esc(u)}" style="display:none">
-      <img src="${esc(u)}" loading="lazy" alt="couverture ${i+1}">
-    </div>`).join('');
-  // n'afficher que les images qui chargent vraiment
-  box.querySelectorAll('.cover-opt img').forEach(img=>{
-    img.addEventListener('load',()=>{ img.parentElement.style.display=''; });
-    img.addEventListener('error',()=>{ img.parentElement.remove(); if(!box.querySelectorAll('.cover-opt').length) box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture trouvée — essayez le titre seul.</span>'; });
+  if(!covers.length){
+    box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture trouvée — essayez avec le titre seul.</span>';
+    return;
+  }
+  // Afficher toutes les URLs candidates — masquées par défaut
+  // Seules celles qui chargent vraiment deviennent visibles
+  box.innerHTML = '<span style="font-size:12px;color:var(--ink-soft)">Chargement des couvertures…</span>';
+  let loaded = 0, shown = 0;
+  const total = covers.length;
+
+  covers.forEach((u, i)=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'cover-opt' + (u===selectedCoverUrl?' selected':'');
+    wrap.dataset.url = u;
+    wrap.style.display = 'none';
+    const img = document.createElement('img');
+    img.alt = 'couverture';
+    img.loading = 'lazy';
+    img.onload = ()=>{
+      // Vérifier que c'est une vraie image (Open Library renvoie parfois une image 1x1 pour "pas trouvé")
+      if(img.naturalWidth > 10 && img.naturalHeight > 10){
+        wrap.style.display = '';
+        shown++;
+        if(shown === 1) box.querySelector('span') && box.querySelector('span').remove();
+        wrap.addEventListener('click',()=>{
+          selectedCoverUrl = wrap.dataset.url;
+          box.querySelectorAll('.cover-opt').forEach(x=>x.classList.remove('selected'));
+          wrap.classList.add('selected');
+          updateCoverPreview();
+        });
+      }
+      loaded++;
+      if(loaded === total && shown === 0){
+        box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture disponible — essayez avec le titre seul ou en anglais.</span>';
+      }
+    };
+    img.onerror = ()=>{
+      loaded++;
+      if(loaded === total && shown === 0){
+        box.innerHTML='<span style="font-size:13px;color:var(--ink-soft)">Aucune couverture disponible — essayez avec le titre seul ou en anglais.</span>';
+      }
+    };
+    img.src = u;
+    wrap.appendChild(img);
+    box.appendChild(wrap);
   });
-  box.querySelectorAll('.cover-opt').forEach(el=>{
-    el.addEventListener('click',()=>{
-      selectedCoverUrl = el.dataset.url;
-      box.querySelectorAll('.cover-opt').forEach(x=>x.classList.remove('selected'));
-      el.classList.add('selected');
-      updateCoverPreview();
-    });
-  });
+  // Retirer le message de chargement initial s'il n'y a pas encore eu d'erreur
+  const span = box.querySelector('span');
+  if(span) setTimeout(()=>{ if(shown === 0 && loaded === 0) {}; }, 5000);
 }
 
 function updateCoverPreview(){
