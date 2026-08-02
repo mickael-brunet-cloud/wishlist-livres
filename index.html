@@ -52,6 +52,7 @@
   .buy-toggle{margin-top:10px;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;user-select:none;}
   .buy-toggle input{width:20px;height:20px;accent-color:var(--sage);cursor:pointer}
   .tag-offert{display:inline-block;margin-top:8px;background:var(--sage);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.4px;}
+  .tag-self{display:inline-block;margin-top:8px;background:var(--gold);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.4px;}
   .heart-pick{display:flex;gap:6px;font-size:28px;cursor:pointer}
   .heart-pick span{color:var(--line);}
   .heart-pick span.on{color:var(--raspberry)}
@@ -222,7 +223,7 @@ async function renderLogin(){
     let picks='';
     for(const u of users){
       const list=await getWishlist(u.slug);
-      const rem=list.filter(b=>!b.boughtBy).length;
+      const rem=list.filter(b=>!b.boughtBy||b.boughtBy==='__self__').length;
       picks+=`<button class="user-pick" data-slug="${u.slug}">
         <span>${esc(u.name)}</span>
         <span class="count">${rem} à offrir</span>
@@ -269,17 +270,31 @@ function enterApp(){
 async function showMine(){
   setTab('mine'); currentFriend=null; setLoading();
   const list=await getWishlist(me.slug);
-  const items=list.map((b,i)=>`
-    <div class="book" style="--spine:${spine(i)}">
+  const items=list.map((b,i)=>{
+    const isSelf = b.boughtBy === '__self__';
+    const isOffered = b.boughtBy && b.boughtBy !== '__self__';
+    const statusTag = isSelf
+      ? `<span class="tag-self">Vous vous l'êtes offert 🛍</span>`
+      : isOffered
+        ? `<span class="tag-offert">Quelqu\'un vous l\'a offert 🎁</span>`
+        : '';
+    const selfToggle = !isOffered ? `
+      <label class="buy-toggle">
+        <input type="checkbox" class="selfBought" data-id="${b.id}" ${isSelf?'checked':''}> Je me le suis offert
+      </label>` : '';
+    return `<div class="book ${(isSelf||isOffered)?'bought':''}" style="--spine:${spine(i)}">
       <div class="row">
         <div>
           <div class="title">${esc(b.title)}</div>
           <div class="author">${esc(b.author)}</div>
           ${heartsHTML(b.hearts)}
+          ${statusTag}
+          ${selfToggle}
         </div>
         <button class="del" data-id="${b.id}">✕</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   document.getElementById('main').innerHTML=`
     <div class="panel">
       <h2>Ajouter un livre</h2>
@@ -310,6 +325,21 @@ async function showMine(){
   document.querySelectorAll('.del').forEach(btn=>{
     btn.addEventListener('click',()=>removeBook(btn.dataset.id));
   });
+  document.querySelectorAll('.selfBought').forEach(cb=>{
+    cb.addEventListener('change',()=>toggleSelfBought(cb.dataset.id, cb.checked));
+  });
+}
+
+async function toggleSelfBought(id, bought){
+  try{
+    const list=await getWishlist(me.slug);
+    const b=list.find(x=>x.id===id);
+    if(!b) return;
+    b.boughtBy = bought ? '__self__' : null;
+    await saveWishlist(me.slug, list);
+    toast(bought ? 'Noté, vous vous l\'êtes offert ce livre 🛍' : 'Retiré');
+    showMine();
+  }catch(e){ console.error(e); toast('Erreur : '+e.message); }
 }
 
 async function addBook(){
@@ -444,7 +474,7 @@ async function showOthers(){
   let rows='';
   for(const u of users){
     const list=await getWishlist(u.slug);
-    const rem=list.filter(b=>!b.boughtBy).length;
+    const rem=list.filter(b=>!b.boughtBy||b.boughtBy==='__self__').length;
     rows+=`<button class="user-pick" data-slug="${u.slug}">
       <span>${esc(u.name)}</span>
       <span class="count">${rem} à offrir · ${list.length} au total</span>
@@ -464,18 +494,21 @@ async function showFriend(slug){
   const friend=users.find(u=>u.slug===slug);
   if(!friend){ showOthers(); return; }
   const list=await getWishlist(slug);
-  const wanted=list.filter(b=>!b.boughtBy).sort((a,b)=>b.hearts-a.hearts);
-  const bought=list.filter(b=>b.boughtBy);
+  const wanted=list.filter(b=>!b.boughtBy||b.boughtBy==='__self__').sort((a,b)=>b.hearts-a.hearts);
+  const bought=list.filter(b=>b.boughtBy&&b.boughtBy!=='__self__');
 
   function bookCard(b,i,isBought){
-    return `<div class="book ${isBought?'bought':''}" style="--spine:${spine(i)}">
+    const selfBought = b.boughtBy === '__self__';
+    const selfTag = selfBought ? `<span class="tag-self" title="Cette personne se l'est offerte">Se l'est offert 🛍</span>` : '';
+    return `<div class="book ${(isBought||selfBought)?'bought':''}" style="--spine:${spine(i)}">
       <div class="title">${esc(b.title)}</div>
       <div class="author">${esc(b.author)}</div>
       ${heartsHTML(b.hearts)}
+      ${selfTag}
       ${isBought
-        ?`<span class="tag-offert">Déjà offert${b.boughtBy===me.slug?' par vous':''}</span>
+        ?`<span class="tag-offert">Offert${b.boughtBy===me.slug?' par vous':''}</span>
           ${b.boughtBy===me.slug?`<label class="buy-toggle"><input type="checkbox" checked class="toggleBtn" data-id="${b.id}" data-bought="0"> Annuler</label>`:''}`
-        :`<label class="buy-toggle"><input type="checkbox" class="toggleBtn" data-id="${b.id}" data-bought="1"> Je l'ai acheté 🎁</label>`}
+        : !selfBought ? `<label class="buy-toggle"><input type="checkbox" class="toggleBtn" data-id="${b.id}" data-bought="1"> Je l'ai acheté 🎁</label>` : ''}
     </div>`;
   }
 
